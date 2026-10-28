@@ -155,8 +155,8 @@ const file_PublicIncreaseDepthsV3Api_proto_rawDesc = "" +
 	"\aversion\x18\x04 \x01(\tR\aversion\"P\n" +
 	"\x1cPublicIncreaseDepthV3ApiItem\x12\x14\n" +
 	"\x05price\x18\x01 \x01(\tR\x05price\x12\x1a\n" +
-	"\bquantity\x18\x02 \x01(\tR\bquantityBe\n" +
-	"\x1ccom.mxc.push.common.protobufB\x1ePublicIncreaseDepthsV3ApiProtoH\x01P\x01Z!github.com/ccxt/ccxt/go/v4/protocb\x06proto3"
+	"\bquantity\x18\x02 \x01(\tR\bquantityBh\n" +
+	"\x1ccom.mxc.push.common.protobufB\x1ePublicIncreaseDepthsV3ApiProtoH\x01P\x01Z$github.com/rosaldo/ccxt/go/v4/protocb\x06proto3"
 
 var (
 	file_PublicIncreaseDepthsV3Api_proto_rawDescOnce sync.Once

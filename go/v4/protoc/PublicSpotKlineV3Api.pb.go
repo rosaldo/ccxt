@@ -154,8 +154,8 @@ const file_PublicSpotKlineV3Api_proto_rawDesc = "" +
 	"\vlowestPrice\x18\x06 \x01(\tR\vlowestPrice\x12\x16\n" +
 	"\x06volume\x18\a \x01(\tR\x06volume\x12\x16\n" +
 	"\x06amount\x18\b \x01(\tR\x06amount\x12\x1c\n" +
-	"\twindowEnd\x18\t \x01(\x03R\twindowEndB`\n" +
-	"\x1ccom.mxc.push.common.protobufB\x19PublicSpotKlineV3ApiProtoH\x01P\x01Z!github.com/ccxt/ccxt/go/v4/protocb\x06proto3"
+	"\twindowEnd\x18\t \x01(\x03R\twindowEndBc\n" +
+	"\x1ccom.mxc.push.common.protobufB\x19PublicSpotKlineV3ApiProtoH\x01P\x01Z$github.com/rosaldo/ccxt/go/v4/protocb\x06proto3"
 
 var (
 	file_PublicSpotKlineV3Api_proto_rawDescOnce sync.Once

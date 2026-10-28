@@ -73,8 +73,8 @@ const file_PublicMiniTickersV3Api_proto_rawDesc = "" +
 	"\n" +
 	"\x1cPublicMiniTickersV3Api.proto\x1a\x1bPublicMiniTickerV3Api.proto\"F\n" +
 	"\x16PublicMiniTickersV3Api\x12,\n" +
-	"\x05items\x18\x01 \x03(\v2\x16.PublicMiniTickerV3ApiR\x05itemsBb\n" +
-	"\x1ccom.mxc.push.common.protobufB\x1bPublicMiniTickersV3ApiProtoH\x01P\x01Z!github.com/ccxt/ccxt/go/v4/protocb\x06proto3"
+	"\x05items\x18\x01 \x03(\v2\x16.PublicMiniTickerV3ApiR\x05itemsBe\n" +
+	"\x1ccom.mxc.push.common.protobufB\x1bPublicMiniTickersV3ApiProtoH\x01P\x01Z$github.com/rosaldo/ccxt/go/v4/protocb\x06proto3"
 
 var (
 	file_PublicMiniTickersV3Api_proto_rawDescOnce sync.Once

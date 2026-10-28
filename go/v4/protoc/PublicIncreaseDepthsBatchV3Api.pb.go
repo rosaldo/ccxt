@@ -82,8 +82,8 @@ const file_PublicIncreaseDepthsBatchV3Api_proto_rawDesc = "" +
 	"$PublicIncreaseDepthsBatchV3Api.proto\x1a\x1fPublicIncreaseDepthsV3Api.proto\"p\n" +
 	"\x1ePublicIncreaseDepthsBatchV3Api\x120\n" +
 	"\x05items\x18\x01 \x03(\v2\x1a.PublicIncreaseDepthsV3ApiR\x05items\x12\x1c\n" +
-	"\teventType\x18\x02 \x01(\tR\teventTypeBj\n" +
-	"\x1ccom.mxc.push.common.protobufB#PublicIncreaseDepthsBatchV3ApiProtoH\x01P\x01Z!github.com/ccxt/ccxt/go/v4/protocb\x06proto3"
+	"\teventType\x18\x02 \x01(\tR\teventTypeBm\n" +
+	"\x1ccom.mxc.push.common.protobufB#PublicIncreaseDepthsBatchV3ApiProtoH\x01P\x01Z$github.com/rosaldo/ccxt/go/v4/protocb\x06proto3"
 
 var (
 	file_PublicIncreaseDepthsBatchV3Api_proto_rawDescOnce sync.Once

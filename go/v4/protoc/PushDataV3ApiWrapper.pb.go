@@ -397,8 +397,8 @@ const file_PushDataV3ApiWrapper_proto_rawDesc = "" +
 	"\a_symbolB\v\n" +
 	"\t_symbolIdB\r\n" +
 	"\v_createTimeB\v\n" +
-	"\t_sendTimeB`\n" +
-	"\x1ccom.mxc.push.common.protobufB\x19PushDataV3ApiWrapperProtoH\x01P\x01Z!github.com/ccxt/ccxt/go/v4/protocb\x06proto3"
+	"\t_sendTimeBc\n" +
+	"\x1ccom.mxc.push.common.protobufB\x19PushDataV3ApiWrapperProtoH\x01P\x01Z$github.com/rosaldo/ccxt/go/v4/protocb\x06proto3"
 
 var (
 	file_PushDataV3ApiWrapper_proto_rawDescOnce sync.Once

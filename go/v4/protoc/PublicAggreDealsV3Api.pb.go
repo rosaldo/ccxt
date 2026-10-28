@@ -155,8 +155,8 @@ const file_PublicAggreDealsV3Api_proto_rawDesc = "" +
 	"\x05price\x18\x01 \x01(\tR\x05price\x12\x1a\n" +
 	"\bquantity\x18\x02 \x01(\tR\bquantity\x12\x1c\n" +
 	"\ttradeType\x18\x03 \x01(\x05R\ttradeType\x12\x12\n" +
-	"\x04time\x18\x04 \x01(\x03R\x04timeBa\n" +
-	"\x1ccom.mxc.push.common.protobufB\x1aPublicAggreDealsV3ApiProtoH\x01P\x01Z!github.com/ccxt/ccxt/go/v4/protocb\x06proto3"
+	"\x04time\x18\x04 \x01(\x03R\x04timeBd\n" +
+	"\x1ccom.mxc.push.common.protobufB\x1aPublicAggreDealsV3ApiProtoH\x01P\x01Z$github.com/rosaldo/ccxt/go/v4/protocb\x06proto3"
 
 var (
 	file_PublicAggreDealsV3Api_proto_rawDescOnce sync.Once

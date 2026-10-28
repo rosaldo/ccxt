@@ -528,7 +528,7 @@ func main() {
 		SetCredentials(instance)
 	}
 
-	<-instance.LoadMarkets()
+	<-instance.LoadMarketsAsync()
 
 	before := time.Now().UnixMilli()
 	for true {
