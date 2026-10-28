@@ -49,8 +49,8 @@ gate() {
   (cd "$REPO_DIR" && go build ./... && go vet ./... && go test -count=1 ./...) \
     || fail "go build, go vet or go test failed"
 
-  # upstream's offline base suite (REST + WS helpers); the exchange, request and
-  # brokerId suites need upstream ts/ fixtures or the network and stay out
+  # upstream's offline base suite (REST + WS helpers); the exchange and request
+  # suites need upstream ts/ fixtures or the network and stay out
   echo "-> gate: base tests (tests --baseTests, REST + WS)"
   (cd "$REPO_DIR/tests" && go run . --baseTests > /dev/null && go run . --baseTests --ws > /dev/null) \
     || fail "tests: base tests failed"
