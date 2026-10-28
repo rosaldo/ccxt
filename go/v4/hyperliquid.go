@@ -223,7 +223,6 @@ func (this *Hyperliquid) Describe() any {
 		"options": map[string]any{
 			"defaultType":       "swap",
 			"sandboxMode":       false,
-			"builderFee":        true,
 			"defaultSlippage":   0.05,
 			"marketHelperProps": []any{"hip3TokensByName", "cachedCurrenciesById"},
 			"zeroAddress":       "0x0000000000000000000000000000000000000000",
@@ -2236,132 +2235,6 @@ func (this *Hyperliquid) BuildUserAbstractionSig(message map[string]any) any {
 	}
 	return this.SignUserSignedAction(messageTypes, message)
 }
-func (this *Hyperliquid) BuildApproveBuilderFeeSig(message any) any {
-	var messageTypes map[string]any = map[string]any{
-		"HyperliquidTransaction:ApproveBuilderFee": []any{map[string]any{
-			"name": "hyperliquidChain",
-			"type": "string",
-		}, map[string]any{
-			"name": "maxFeeRate",
-			"type": "string",
-		}, map[string]any{
-			"name": "builder",
-			"type": "address",
-		}, map[string]any{
-			"name": "nonce",
-			"type": "uint64",
-		}},
-	}
-	return this.SignUserSignedAction(messageTypes, message)
-}
-func (this *Hyperliquid) SetRefAsync() <-chan AsyncResult[bool] {
-	ch := make(chan AsyncResult[bool], 1)
-	go this.setRefBody(ch)
-	return ch
-}
-func (this *Hyperliquid) setRefBody(ch chan AsyncResult[bool]) any {
-	defer close(ch)
-	defer ReturnPanicError(ch)
-	if *this.SafeBool(this.Options, "refSet", false) {
-
-		ch <- AsyncResult[bool]{Value: true}
-		return nil
-	}
-	this.Options.Store("refSet", true)
-	var action map[string]any = map[string]any{
-		"type": "setReferrer",
-		"code": this.SafeString(this.Options, "ref", "CCXT1"),
-	}
-	var nonce any = this.IncrementingNonce()
-	var signature any = this.SignL1Action(action, nonce)
-	var request map[string]any = map[string]any{
-		"action":    action,
-		"nonce":     nonce,
-		"signature": signature,
-	}
-	var success bool = false
-
-	{
-		func(this *Hyperliquid) (ret_ any) {
-			defer func() {
-				if e := recover(); e != nil {
-					if e == "break" {
-						return
-					}
-					ret_ = func(this *Hyperliquid) any {
-						// catch block:
-						success = false // ignore this
-						return nil
-					}(this)
-				}
-			}()
-			// try block:
-
-			r := <-this.PrivatePostExchange(request)
-			if r.Err != nil {
-				panic(r.Err)
-			}
-			success = true
-			return nil
-		}(this)
-
-	}
-
-	ch <- AsyncResult[bool]{Value: success}
-	return nil
-}
-func (this *Hyperliquid) ApproveBuilderFeeAsync(builder any, maxFeeRate any) <-chan AsyncResult[map[string]any] {
-	ch := make(chan AsyncResult[map[string]any], 1)
-	go this.approveBuilderFeeBody(ch, builder, maxFeeRate)
-	return ch
-}
-func (this *Hyperliquid) approveBuilderFeeBody(ch chan AsyncResult[map[string]any], builder any, maxFeeRate any) any {
-	defer close(ch)
-	defer ReturnPanicError(ch)
-	var nonce any = this.IncrementingNonce()
-	var isSandboxMode *bool = this.SafeBool(this.Options, "sandboxMode", false)
-	var payload map[string]any = map[string]any{
-		"hyperliquidChain": func() string {
-			if isSandboxMode != nil && *isSandboxMode {
-				return "Testnet"
-			}
-			return "Mainnet"
-		}(),
-		"maxFeeRate": maxFeeRate,
-		"builder":    builder,
-		"nonce":      nonce,
-	}
-	var sig any = this.BuildApproveBuilderFeeSig(payload)
-	var action map[string]any = map[string]any{
-		"hyperliquidChain": payload["hyperliquidChain"],
-		"signatureChainId": "0x66eee",
-		"maxFeeRate":       payload["maxFeeRate"],
-		"builder":          payload["builder"],
-		"nonce":            nonce,
-		"type":             "approveBuilderFee",
-	}
-	var request map[string]any = map[string]any{
-		"action":       action,
-		"nonce":        nonce,
-		"signature":    sig,
-		"vaultAddress": nil,
-	}
-
-	//
-	// {
-	//     "status": "ok",
-	//     "response": {
-	//         "type": "default"
-	//     }
-	// }
-	//
-	r := <-this.PrivatePostExchange(request)
-	if r.Err != nil {
-		panic(r.Err)
-	}
-	ch <- AsyncResult[map[string]any]{Value: r.Value}
-	return nil
-}
 func (this *Hyperliquid) InitializeClientAsync() <-chan AsyncResult[bool] {
 	ch := make(chan AsyncResult[bool], 1)
 	go this.initializeClientBody(ch)
@@ -2392,7 +2265,7 @@ func (this *Hyperliquid) initializeClientBody(ch chan AsyncResult[bool]) any {
 			}()
 			// try block:
 
-			r := <-promiseAll([]any{this.HandleBuilderFeeApprovalAsync(), this.SetRefAsync(), this.IsUnifiedEnabledAsync("fetchBalance", nil, false, map[string]any{})}) // for now only fetchBalance requires the unified knowledge, but we can extend this to other methods as needed
+			r := <-promiseAll([]any{this.IsUnifiedEnabledAsync("fetchBalance", nil, false, map[string]any{})}) // for now only fetchBalance requires the unified knowledge, but we can extend this to other methods as needed
 			if r.Err != nil {
 				panic(r.Err)
 			}
@@ -2401,58 +2274,6 @@ func (this *Hyperliquid) initializeClientBody(ch chan AsyncResult[bool]) any {
 		if chSent {
 			return nil
 		}
-
-	}
-
-	ch <- AsyncResult[bool]{Value: true}
-	return nil
-}
-func (this *Hyperliquid) HandleBuilderFeeApprovalAsync() <-chan AsyncResult[bool] {
-	ch := make(chan AsyncResult[bool], 1)
-	go this.handleBuilderFeeApprovalBody(ch)
-	return ch
-}
-func (this *Hyperliquid) handleBuilderFeeApprovalBody(ch chan AsyncResult[bool]) any {
-	defer close(ch)
-	defer ReturnPanicError(ch)
-	var buildFee *bool = this.SafeBool(this.Options, "builderFee", true)
-	var approvedBuilderFee *bool = this.SafeBool(this.Options, "approvedBuilderFee", false)
-	if approvedBuilderFee != nil && *approvedBuilderFee {
-
-		ch <- AsyncResult[bool]{Value: true} // skip if builder fee is already approved
-		return nil
-	}
-
-	{
-		func(this *Hyperliquid) (ret_ any) {
-			defer func() {
-				if e := recover(); e != nil {
-					if e == "break" {
-						return
-					}
-					ret_ = func(this *Hyperliquid) any {
-						// catch block:
-						this.Options.Store("builderFee", false) // disable builder fee if an error occurs
-						return nil
-					}(this)
-				}
-			}()
-			// try block:
-			var builder *string = this.SafeString(this.Options, "builder", "0x6530512A6c89C7cfCEbC3BA7fcD9aDa5f30827a6")
-			// when the user disables the builder fee (builderFee = false) we still approve and attach the builder,
-			// but with a 0% fee rate, so orders remain attributed to the builder for statistics purposes only and the user is not charged
-			var maxFeeRate *string = this.SafeString(this.Options, "feeRate", "0.01%")
-			if !(buildFee != nil && *buildFee) {
-				maxFeeRate = SafeStringPtr("0%")
-			}
-
-			r := <-this.ApproveBuilderFeeAsync(builder, maxFeeRate)
-			if r.Err != nil {
-				panic(r.Err)
-			}
-			this.Options.Store("approvedBuilderFee", true)
-			return nil
-		}(this)
 
 	}
 
@@ -3177,19 +2998,6 @@ func (this *Hyperliquid) CreateOrdersRequest(orders any, optionalArgs ...any) ma
 		"type":     "order",
 		"orders":   orderReq,
 		"grouping": grouping,
-	}
-	if *this.SafeBool(this.Options, "approvedBuilderFee", false) {
-		var builder string = "0x6530512A6c89C7cfCEbC3BA7fcD9aDa5f30827a6"
-		var wallet *string = this.SafeStringLower(this.Options, "builder", strings.ToLower(builder))
-		// when builderFee is disabled the builder is still attached but with a 0% fee (f = 0), for statistics purposes only
-		var feeInt any = DerefScalar(this.SafeInteger(this.Options, "feeInt", 10))
-		if !(*this.SafeBool(this.Options, "builderFee", true)) {
-			feeInt = 0
-		}
-		orderAction["builder"] = map[string]any{
-			"b": wallet,
-			"f": feeInt,
-		}
 	}
 	var signature any = this.SignL1Action(orderAction, nonce, vaultAddress)
 	var request map[string]any = map[string]any{
@@ -4940,9 +4748,10 @@ func (this *Hyperliquid) ParseTrade(trade any, optionalArgs ...any) Trade {
 			return "maker"
 		}())
 	}
-	var builderFee *string = this.SafeString(trade, "builderFee")
-	if builderFee != nil {
-		fee = Precise.StringAdd(fee, builderFee)
+	// fork: kept on purpose — a fill made through a third-party front-end reports what that builder charged
+	var thirdPartyFee *string = this.SafeString(trade, "builderFee")
+	if thirdPartyFee != nil {
+		fee = Precise.StringAdd(fee, thirdPartyFee)
 	}
 	return this.SafeTrade(map[string]any{
 		"info":         trade,

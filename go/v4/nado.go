@@ -190,9 +190,6 @@ func (this *Nado) Describe() any {
 			"editOrder": map[string]any{
 				"placeRequiresUnfilled": true,
 			},
-			"builderFee": true,
-			"builder":    "4500",
-			"feeRate":    "10",
 		},
 		"timeframes": map[string]any{
 			"1m":  60,
@@ -4007,13 +4004,6 @@ func (this *Nado) CreateOrderAppendix(isTriggerOrder any, optionalArgs ...any) a
 	}
 	if reduceOnly != nil && *reduceOnly {
 		appendix = Precise.StringAdd(appendix, "2048")
-	}
-	var buildFee *bool = this.SafeBool(this.Options, "builderFee", true)
-	if buildFee != nil && *buildFee {
-		var builder *string = this.SafeString(this.Options, "builder", "4500")
-		var builderFeeRate *string = this.SafeString(this.Options, "feeRate", "10")               // 10 units = 0.01%
-		appendix = Precise.StringAdd(appendix, Precise.StringMul(builder, "281474976710656"))     // 1<<48
-		appendix = Precise.StringAdd(appendix, Precise.StringMul(builderFeeRate, "274877906944")) // 1<<32
 	}
 	if EvalTruthy(isTriggerOrder) {
 		appendix = Precise.StringAdd(appendix, "4096")

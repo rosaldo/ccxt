@@ -128,10 +128,6 @@ func (this *Hyperliquid) Describe() any {
 			"outcomeQuoteCurrency": "USDH",
 			"defaultSlippage":      0.05,
 			"zeroAddress":          "0x0000000000000000000000000000000000000000",
-			"builderFee":           true,
-			"builder":              "0x6530512A6c89C7cfCEbC3BA7fcD9aDa5f30827a6",
-			"feeRate":              "0%",
-			"feeInt":               0,
 		},
 		"exceptions": map[string]any{
 			"exact": map[string]any{
@@ -1653,19 +1649,6 @@ func (this *Hyperliquid) createOrderBody(ch chan ccxt.AsyncResult[ccxt.Predictio
 		"orders":   []any{orderObj},
 		"grouping": "na",
 	}
-	if *this.SafeBool(this.Options, "approvedBuilderFee", false) {
-		var wallet *string = this.SafeStringLower(this.Options, "builder", "0x6530512A6c89C7cfCEbC3BA7fcD9aDa5f30827a6")
-		// feeInt defaults to 0: the builder is attached for statistics purposes only and the
-		// user is not charged; set options.feeInt (tenths of a bp) together with feeRate to charge
-		var feeInt any = ccxt.DerefScalar(this.SafeInteger(this.Options, "feeInt", 0))
-		if !(*this.SafeBool(this.Options, "builderFee", true)) {
-			feeInt = 0
-		}
-		orderAction["builder"] = map[string]any{
-			"b": wallet,
-			"f": feeInt,
-		}
-	}
 	var signature any = this.SignL1Action(orderAction, nonce, vaultAddress)
 	var request map[string]any = map[string]any{
 		"action":    orderAction,
@@ -2905,78 +2888,6 @@ func (this *Hyperliquid) SignUserSignedAction(messageTypes any, message any) any
 	var signature any = this.SignMessage(msg, this.PrivateKey)
 	return signature
 }
-func (this *Hyperliquid) BuildApproveBuilderFeeSig(message any) any {
-	var messageTypes map[string]any = map[string]any{
-		"HyperliquidTransaction:ApproveBuilderFee": []any{map[string]any{
-			"name": "hyperliquidChain",
-			"type": "string",
-		}, map[string]any{
-			"name": "maxFeeRate",
-			"type": "string",
-		}, map[string]any{
-			"name": "builder",
-			"type": "address",
-		}, map[string]any{
-			"name": "nonce",
-			"type": "uint64",
-		}},
-	}
-	return this.SignUserSignedAction(messageTypes, message)
-}
-
-/**
- * @method
- * @name hyperliquid#approveBuilderFee
- * @ignore
- * @description approves the builder for the given max fee rate, required before orders can carry a builder attribution
- * @param {string} builder the builder wallet address
- * @param {string} maxFeeRate the maximum builder fee rate to approve, e.g. '0%'
- * @returns {object} the raw exchange response
- */
-func (this *Hyperliquid) ApproveBuilderFeeAsync(builder any, maxFeeRate any) <-chan ccxt.AsyncResult[map[string]any] {
-	ch := make(chan ccxt.AsyncResult[map[string]any], 1)
-	go this.approveBuilderFeeBody(ch, builder, maxFeeRate)
-	return ch
-}
-func (this *Hyperliquid) approveBuilderFeeBody(ch chan ccxt.AsyncResult[map[string]any], builder any, maxFeeRate any) any {
-	defer close(ch)
-	defer ccxt.ReturnPanicError(ch)
-	var nonce any = this.IncrementingNonce()
-	var isSandboxMode *bool = this.SafeBool(this.Options, "sandboxMode", false)
-	var payload map[string]any = map[string]any{
-		"hyperliquidChain": func() string {
-			if isSandboxMode != nil && *isSandboxMode {
-				return "Testnet"
-			}
-			return "Mainnet"
-		}(),
-		"maxFeeRate": maxFeeRate,
-		"builder":    builder,
-		"nonce":      nonce,
-	}
-	var sig any = this.BuildApproveBuilderFeeSig(payload)
-	var action map[string]any = map[string]any{
-		"hyperliquidChain": payload["hyperliquidChain"],
-		"signatureChainId": "0x66eee",
-		"maxFeeRate":       payload["maxFeeRate"],
-		"builder":          payload["builder"],
-		"nonce":            nonce,
-		"type":             "approveBuilderFee",
-	}
-	var request map[string]any = map[string]any{
-		"action":       action,
-		"nonce":        nonce,
-		"signature":    sig,
-		"vaultAddress": nil,
-	}
-
-	r := <-this.PrivatePostExchange(request)
-	if r.Err != nil {
-		panic(r.Err)
-	}
-	ch <- ccxt.AsyncResult[map[string]any]{Value: r.Value}
-	return nil
-}
 func (this *Hyperliquid) InitializeClientAsync() <-chan ccxt.AsyncResult[bool] {
 	ch := make(chan ccxt.AsyncResult[bool], 1)
 	go this.initializeClientBody(ch)
@@ -2993,47 +2904,7 @@ func (this *Hyperliquid) initializeClientBody(ch chan ccxt.AsyncResult[bool]) an
 	if r.Err != nil {
 		panic(r.Err)
 	}
-	var buildFee *bool = this.SafeBool(this.Options, "builderFee", false)
-	if !(buildFee != nil && *buildFee) {
-
-		return nil
-	}
-	if *this.SafeBool(this.Options, "approvedBuilderFee", false) {
-
-		ch <- ccxt.AsyncResult[bool]{} // already approved
-		return nil
-	}
-
-	{
-		func(this *Hyperliquid) (ret_ any) {
-			defer func() {
-				if e := recover(); e != nil {
-					if e == "break" {
-						return
-					}
-					ret_ = func(this *Hyperliquid) any {
-						// catch block:
-						this.Options.Store("builderFee", false) // disable builder fee if an error occurs
-						return nil
-					}(this)
-				}
-			}()
-			// try block:
-			var builder *string = this.SafeString(this.Options, "builder", "0x6530512A6c89C7cfCEbC3BA7fcD9aDa5f30827a6")
-			// the default feeRate is '0%': the builder is approved and attached for statistics
-			// purposes only and the user is not charged; set options.feeRate/feeInt to charge a fee
-			var maxFeeRate *string = this.SafeString(this.Options, "feeRate", "0%")
-
-			r1 := <-this.ApproveBuilderFeeAsync(builder, maxFeeRate)
-			if r1.Err != nil {
-				panic(r1.Err)
-			}
-			this.Options.Store("approvedBuilderFee", true)
-			return nil
-		}(this)
-
-	}
-
+	ch <- ccxt.AsyncResult[bool]{Value: true}
 	return nil
 }
 func (this *Hyperliquid) HandlePublicAddress(methodName string, params any) []any {

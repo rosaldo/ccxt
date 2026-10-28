@@ -454,16 +454,12 @@ func (this *Lighter) Describe() any {
 		"commonCurrencies": map[string]any{},
 		"options": map[string]any{
 			"defaultType":                  "swap",
-			"builderFee":                   true,
 			"chainId":                      304,
 			"accountIndex":                 nil,
 			"apiKeyIndex":                  nil,
 			"lighterPrivateKey":            nil,
 			"wasmExecPath":                 nil,
 			"libraryPath":                  nil,
-			"integratorAccountIndex":       718718,
-			"integratorMakerFee":           1000,
-			"integratorTakerFee":           1000,
 			"authDeadlineExpiry":           28800,
 			"authDeadlineMinimumRemaining": 60,
 			"tiersForAccountIndexes":       map[string]any{},
@@ -542,11 +538,6 @@ func (this *Lighter) loadAccountBody(ch chan AsyncResult[any], chainId any, priv
 		}
 		res := r2.Value
 
-		r3 := <-this.HandleBuilderFeeApprovalAsync(this.ParseToInt(accountIndex), this.ParseToInt(apiKeyIndex))
-		if r3.Err != nil {
-			panic(r3.Err)
-		}
-
 		ch <- AsyncResult[any]{Value: res}
 		return nil
 	}
@@ -624,10 +615,6 @@ func (this *Lighter) preLoadLighterLibraryBody(ch chan AsyncResult[bool], option
 	}
 	signer = r1.Value
 
-	r2 := <-this.HandleBuilderFeeApprovalAsync(accountIndex, apiKeyIndex)
-	if r2.Err != nil {
-		panic(r2.Err)
-	}
 	var loaded bool = (!IsEqual(signer, nil))
 
 	ch <- AsyncResult[bool]{Value: loaded}
@@ -846,76 +833,6 @@ func (this *Lighter) SignL1AndPrepareTxInfo(txInfo any, message any, privateKey 
 	AddElementToObject(decTxInfo, "L1Sig", signature)
 	return this.Json(decTxInfo)
 }
-func (this *Lighter) HandleBuilderFeeApprovalAsync(accountIndex any, apiKeyIndex any) <-chan AsyncResult[bool] {
-	ch := make(chan AsyncResult[bool], 1)
-	go this.handleBuilderFeeApprovalBody(ch, accountIndex, apiKeyIndex)
-	return ch
-}
-func (this *Lighter) handleBuilderFeeApprovalBody(ch chan AsyncResult[bool], accountIndex any, apiKeyIndex any) any {
-	defer close(ch)
-	defer ReturnPanicError(ch)
-	var buildFee *bool = this.SafeBool(this.Options, "builderFee", true)
-	if !(buildFee != nil && *buildFee) {
-
-		ch <- AsyncResult[bool]{Value: false}
-		return nil
-	}
-	var approvedBuilderFee *bool = this.SafeBool(this.Options, "approvedBuilderFee", false)
-	if approvedBuilderFee != nil && *approvedBuilderFee {
-
-		ch <- AsyncResult[bool]{Value: true}
-		return nil
-	}
-	var standardTier bool = false
-
-	{
-		func(this *Lighter) (ret_ any) {
-			defer func() {
-				if e := recover(); e != nil {
-					if e == "break" {
-						return
-					}
-					ret_ = func(this *Lighter) any {
-						// catch block:
-						this.Options.Store("builderFee", false)
-						return nil
-					}(this)
-				}
-			}()
-			// try block:
-
-			r := <-this.CheckIfStandardTierAsync(this.ParseToInt(accountIndex))
-			if r.Err != nil {
-				panic(r.Err)
-			}
-			isStandardTier := r.Value
-			if isStandardTier == true {
-				standardTier = true
-				this.Options.Store("builderFee", false)
-			} else {
-				var builder *int64 = this.SafeInteger(this.Options, "integratorAccountIndex", 718718)
-				var takerFeeRate *int64 = this.SafeInteger(this.Options, "integratorTakerFee", 1000)
-				var makerFeeRate *int64 = this.SafeInteger(this.Options, "integratorMakerFee", 1000)
-
-				r1 := <-this.ApproveBuilderFeeAsync(builder, takerFeeRate, makerFeeRate, accountIndex, apiKeyIndex)
-				if r1.Err != nil {
-					panic(r1.Err)
-				}
-				this.Options.Store("approvedBuilderFee", true)
-			}
-			return nil
-		}(this)
-
-	}
-	if standardTier {
-
-		ch <- AsyncResult[bool]{Value: false}
-		return nil
-	}
-
-	ch <- AsyncResult[bool]{Value: true}
-	return nil
-}
 func (this *Lighter) CheckIfStandardTierAsync(accountIndex any) <-chan AsyncResult[bool] {
 	ch := make(chan AsyncResult[bool], 1)
 	go this.checkIfStandardTierBody(ch, accountIndex)
@@ -962,61 +879,6 @@ func (this *Lighter) checkIfStandardTierBody(ch chan AsyncResult[bool], accountI
 	this.Options.Store("tiersForAccountIndexes", tiersForAccountIndexes)
 
 	ch <- AsyncResult[bool]{Value: isStandard}
-	return nil
-}
-func (this *Lighter) ApproveBuilderFeeAsync(builder any, takerFeeRate any, makerFeeRate any, accountIndex any, apiKeyIndex any, optionalArgs ...any) <-chan AsyncResult[map[string]any] {
-	ch := make(chan AsyncResult[map[string]any], 1)
-	go this.approveBuilderFeeBody(ch, builder, takerFeeRate, makerFeeRate, accountIndex, apiKeyIndex, optionalArgs...)
-	return ch
-}
-func (this *Lighter) approveBuilderFeeBody(ch chan AsyncResult[map[string]any], builder any, takerFeeRate any, makerFeeRate any, accountIndex any, apiKeyIndex any, optionalArgs ...any) any {
-	defer close(ch)
-	defer ReturnPanicError(ch)
-	var params map[string]any = GetArgMap(optionalArgs, 0, map[string]any{})
-	_ = params
-	var strAccountIndex *string = this.NumberToString(accountIndex)
-	var strApiKeyIndex *string = this.NumberToString(apiKeyIndex)
-
-	r := <-this.LoadAccountAsync(GetValue(this.Options, "chainId"), this.GetLighterPrivateKey(strAccountIndex, strApiKeyIndex), strApiKeyIndex, strAccountIndex, params)
-	if r.Err != nil {
-		panic(r.Err)
-	}
-	signer := r.Value
-
-	r1 := <-this.FetchNonceAsync(accountIndex, apiKeyIndex, this.Extend(params, map[string]any{
-		"skipNonce": false,
-	}))
-	if r1.Err != nil {
-		panic(r1.Err)
-	}
-	var nonce *int64 = Int64PtrTyped(r1.Value)
-	var expiry int64 = this.Milliseconds() + (365 * 864000)
-	var signRaw map[string]any = map[string]any{
-		"integrator_account_index": builder,
-		"integrator_taker_fee":     takerFeeRate,
-		"integrator_maker_fee":     makerFeeRate,
-		"approval_expiry":          expiry,
-		"nonce":                    nonce,
-		"api_key_index":            apiKeyIndex,
-		"account_index":            accountIndex,
-	}
-	txTypetxInfomessageToSignVariable := this.LighterSignApproveIntegrator(signer, this.Extend(signRaw, params))
-	txType := GetValue(txTypetxInfomessageToSignVariable, 0)
-	txInfo := GetValue(txTypetxInfomessageToSignVariable, 1)
-	messageToSign := GetValue(txTypetxInfomessageToSignVariable, 2)
-	var newTxInfo string = this.SignL1AndPrepareTxInfo(txInfo, messageToSign, this.PrivateKey)
-	var request map[string]any = map[string]any{
-		"tx_type": txType,
-		"tx_info": newTxInfo,
-	}
-
-	r2 := <-this.PublicPostSendTx(request)
-	if r2.Err != nil {
-		panic(r2.Err)
-	}
-	response := r2.Value
-
-	ch <- AsyncResult[map[string]any]{Value: response}
 	return nil
 }
 func (this *Lighter) ChangeApiKeyAsync(optionalArgs ...any) <-chan AsyncResult[any] {
@@ -1078,11 +940,6 @@ func (this *Lighter) changeApiKeyBody(ch chan AsyncResult[any], optionalArgs ...
 	}
 	AddElementToObject(GetValue(GetValue(GetValue(this.Options, "auths"), strAccountIndex), strApiKeyIndex), "lighterPrivateKey", privateKey)
 	AddElementToObject(GetValue(GetValue(GetValue(this.Options, "auths"), strAccountIndex), strApiKeyIndex), "signer", signer) // reassign signer in go
-
-	r3 := <-this.HandleBuilderFeeApprovalAsync(accountIndex, apiKeyIndex)
-	if r3.Err != nil {
-		panic(r3.Err)
-	}
 
 	ch <- AsyncResult[any]{Value: signer}
 	return nil
@@ -1240,11 +1097,6 @@ func (this *Lighter) CreateOrderRequest(symbol any, typeVar any, side any, amoun
 	request["base_amount"] = this.ParseToInt(Precise.StringMul(amountStr, amountScale))
 	request["avg_execution_price"] = this.ParseToInt(Precise.StringMul(priceStr, priceScale))
 	request["trigger_price"] = this.ParseToInt(Precise.StringMul(triggerPriceStr, priceScale))
-	if *this.SafeBool(this.Options, "builderFee", true) {
-		request["integrator_account_index"] = GetValue(this.Options, "integratorAccountIndex")
-		request["integrator_taker_fee"] = GetValue(this.Options, "integratorTakerFee")
-		request["integrator_maker_fee"] = GetValue(this.Options, "integratorMakerFee")
-	}
 	var orders []any = []any{}
 	orders = append(orders, this.Extend(request, paramsRequest))
 	if hasStopLoss || hasTakeProfit {
@@ -1365,35 +1217,6 @@ func (this *Lighter) signAndCreateOrderBody(ch chan AsyncResult[[]map[string]any
 		panic(r2.Err)
 	}
 	signer := r2.Value
-
-	{
-		func(this *Lighter) (ret_ any) {
-			defer func() {
-				if e := recover(); e != nil {
-					if e == "break" {
-						return
-					}
-					ret_ = func(this *Lighter) any {
-						// catch block:
-						this.Options.Store("builderFee", false)
-						return nil
-					}(this)
-				}
-			}()
-			// try block:
-
-			r3 := <-this.CheckIfStandardTierAsync(accountIndex)
-			if r3.Err != nil {
-				panic(r3.Err)
-			}
-			isStandardTier := r3.Value
-			if isStandardTier == true {
-				this.Options.Store("builderFee", false)
-			}
-			return nil
-		}(this)
-
-	}
 	groupingType, paramsGroupingType := this.HandleOptionIntegerAndParams(params, method, "groupingType", 3) // default GROUPING_TYPE_ONE_TRIGGERS_A_ONE_CANCELS_THE_OTHER
 	var orderRequests []any = this.CreateOrderRequest(symbol, typeVar, side, amount, price, paramsGroupingType)
 	var totalOrderRequests int = len(orderRequests)
@@ -1442,11 +1265,6 @@ func (this *Lighter) signAndCreateOrderBody(ch chan AsyncResult[[]map[string]any
 			"nonce":         GetValue(order, "nonce"),
 			"api_key_index": apiKeyIndex,
 			"account_index": accountIndex,
-		}
-		if *this.SafeBool(this.Options, "builderFee", true) {
-			signingPayload["integrator_account_index"] = GetValue(order, "integrator_account_index")
-			signingPayload["integrator_taker_fee"] = GetValue(order, "integrator_taker_fee")
-			signingPayload["integrator_maker_fee"] = GetValue(order, "integrator_maker_fee")
 		}
 		txTypetxInfoVariable := this.LighterSignCreateGroupedOrders(signer, signingPayload)
 		txType = GetValue(txTypetxInfoVariable, 0)
@@ -1611,11 +1429,6 @@ func (this *Lighter) editOrderBody(ch chan AsyncResult[Order], id string, symbol
 		"nonce":         nonce,
 		"api_key_index": apiKeyIndex,
 		"account_index": accountIndex,
-	}
-	if *this.SafeBool(this.Options, "builderFee", true) {
-		signRaw["integrator_account_index"] = GetValue(this.Options, "integratorAccountIndex")
-		signRaw["integrator_taker_fee"] = GetValue(this.Options, "integratorTakerFee")
-		signRaw["integrator_maker_fee"] = GetValue(this.Options, "integratorMakerFee")
 	}
 	txTypetxInfoVariable := this.LighterSignModifyOrder(signer, this.Extend(signRaw, paramsOmitted))
 	txType := GetValue(txTypetxInfoVariable, 0)

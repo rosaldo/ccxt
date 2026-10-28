@@ -485,11 +485,7 @@ func (this *Extended) Describe() any {
 			},
 			"broad": map[string]any{},
 		},
-		"options": map[string]any{
-			"builderFee":     true,
-			"builderFeeRate": "0.0001",
-			"builderId":      "257624",
-		},
+		"options": map[string]any{},
 	})
 }
 func (this *Extended) LoadMarketsAsync(optionalArgs ...any) <-chan AsyncResult[*sync.Map] {
@@ -3018,8 +3014,7 @@ func (this *Extended) fetchTradingFeeBody(ch chan AsyncResult[TradingFeeInterfac
 	//             {
 	//                 "market": "BTC-USD",
 	//                 "makerFeeRate": "0.00000",
-	//                 "takerFeeRate": "0.00025",
-	//                 "builderFeeRate": "0.0001"
+	//                 "takerFeeRate": "0.00025"
 	//             }
 	//         ]
 	//     }
@@ -3069,8 +3064,7 @@ func (this *Extended) fetchTradingFeesBody(ch chan AsyncResult[map[string]Tradin
 	//             {
 	//                 "market": "BTC-USD",
 	//                 "makerFeeRate": "0.00000",
-	//                 "takerFeeRate": "0.00025",
-	//                 "builderFeeRate": "0.0001"
+	//                 "takerFeeRate": "0.00025"
 	//             }
 	//         ]
 	//     }
@@ -3094,8 +3088,7 @@ func (this *Extended) ParseTradingFee(fee map[string]any, optionalArgs ...any) T
 	//     {
 	//         "market": "BTC-USD",
 	//         "makerFeeRate": "0.00000",
-	//         "takerFeeRate": "0.00025",
-	//         "builderFeeRate": "0.0001"
+	//         "takerFeeRate": "0.00025"
 	//     }
 	//
 	var market map[string]any = GetArgMap(optionalArgs, 0, nil)
@@ -3715,25 +3708,8 @@ func (this *Extended) createExtendedOrderRequestBody(ch chan AsyncResult[map[str
 		}())
 	}
 	var fee *string = this.SafeString(params, "fee", "0.0005")
-	var builderFeeRate *string = nil
-	var builderId *string = nil
 	var paramsBuilder any = params
-	var builderEnabled *bool = this.SafeBool(this.Options, "builderFee")
-	if builderEnabled != nil && *builderEnabled == true {
-		if this.IsSandboxModeEnabled {
-			builderFeeRate = this.SafeString2(params, "builderFeeRate", "defaultBuilderFeeRate")
-			builderId = this.SafeString2(params, "builderId", "defaultBuilderId")
-			paramsBuilder = this.Omit(params, []any{"builderFeeRate", "defaultBuilderFeeRate", "builderId", "defaultBuilderId"})
-		} else {
-			var paramsBuilderFeeRate any = nil
-			builderFeeRate, paramsBuilderFeeRate = this.HandleOptionStringAndParams(params, "createOrder", "builderFeeRate", "0.0001")
-			builderId, paramsBuilder = this.HandleOptionStringAndParams(paramsBuilderFeeRate, "createOrder", "builderId")
-		}
-	}
 	var totalFee *string = fee
-	if builderFeeRate != nil {
-		totalFee = Precise.StringAdd(fee, builderFeeRate)
-	}
 	var now int64 = this.Milliseconds()
 	var expiryEpochMillis *int64 = this.SafeInteger(paramsBuilder, "expiryEpochMillis", now+3600000)
 	var settlementDefault *int64 = func() *int64 {
@@ -3788,12 +3764,6 @@ func (this *Extended) createExtendedOrderRequestBody(ch chan AsyncResult[map[str
 		"postOnly":                 postOnly,
 		"reduceOnly":               reduceOnly,
 		"selfTradeProtectionLevel": "ACCOUNT",
-	}
-	if builderFeeRate != nil {
-		request["builderFee"] = builderFeeRate
-	}
-	if builderId != nil {
-		request["builderId"] = builderId
 	}
 	var cancelId *string = this.SafeString2(paramsBuilder, "cancelId", "previousOrderId")
 	if cancelId != nil {

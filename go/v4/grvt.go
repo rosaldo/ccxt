@@ -353,9 +353,6 @@ func (this *Grvt) Describe() any {
 			"networksById": map[string]any{
 				"1": "ERC20",
 			},
-			"builderFee":  true,
-			"builder":     "0x21d2a053495994b1132a38cd1171acec40c6741e",
-			"builderRate": 0.01,
 		},
 		"precisionMode": TICK_SIZE,
 		"features": map[string]any{
@@ -597,52 +594,6 @@ func (this *Grvt) EipDefinitions() map[string]any {
 				"type": "bool",
 			}},
 		},
-		"EIP712_ORDER_WITH_BUILDER_TYPE": map[string]any{
-			"OrderWithBuilderFee": []any{map[string]any{
-				"name": "subAccountID",
-				"type": "uint64",
-			}, map[string]any{
-				"name": "isMarket",
-				"type": "bool",
-			}, map[string]any{
-				"name": "timeInForce",
-				"type": "uint8",
-			}, map[string]any{
-				"name": "postOnly",
-				"type": "bool",
-			}, map[string]any{
-				"name": "reduceOnly",
-				"type": "bool",
-			}, map[string]any{
-				"name": "legs",
-				"type": "OrderLeg[]",
-			}, map[string]any{
-				"name": "builder",
-				"type": "address",
-			}, map[string]any{
-				"name": "builderFee",
-				"type": "uint32",
-			}, map[string]any{
-				"name": "nonce",
-				"type": "uint32",
-			}, map[string]any{
-				"name": "expiration",
-				"type": "int64",
-			}},
-			"OrderLeg": []any{map[string]any{
-				"name": "assetID",
-				"type": "uint256",
-			}, map[string]any{
-				"name": "contractSize",
-				"type": "uint64",
-			}, map[string]any{
-				"name": "limitPrice",
-				"type": "uint64",
-			}, map[string]any{
-				"name": "isBuyingContract",
-				"type": "bool",
-			}},
-		},
 		"EIP712_TRANSFER_TYPE": map[string]any{
 			"Transfer": []any{map[string]any{
 				"name": "fromAccount",
@@ -683,27 +634,6 @@ func (this *Grvt) EipDefinitions() map[string]any {
 			}, map[string]any{
 				"name": "numTokens",
 				"type": "uint64",
-			}, map[string]any{
-				"name": "nonce",
-				"type": "uint32",
-			}, map[string]any{
-				"name": "expiration",
-				"type": "int64",
-			}},
-		},
-		"EIP712_BUILDER_APPROVAL_TYPE": map[string]any{
-			"AuthorizeBuilder": []any{map[string]any{
-				"name": "mainAccountID",
-				"type": "address",
-			}, map[string]any{
-				"name": "builderAccountID",
-				"type": "address",
-			}, map[string]any{
-				"name": "maxFutureFeeRate",
-				"type": "uint32",
-			}, map[string]any{
-				"name": "maxSpotFeeRate",
-				"type": "uint32",
 			}, map[string]any{
 				"name": "nonce",
 				"type": "uint32",
@@ -766,11 +696,6 @@ func (this *Grvt) signInBody(ch chan AsyncResult[any], optionalArgs ...any) any 
 	r := <-this.SignInWithPrivateKeyAsync(params)
 	if r.Err != nil {
 		panic(r.Err)
-	}
-
-	r1 := <-this.InitializeClientAsync(params)
-	if r1.Err != nil {
-		panic(r1.Err)
 	}
 
 	r2 := <-this.LoadAccountInfosAsync()
@@ -861,112 +786,6 @@ func (this *Grvt) signInWithPrivateKeyBody(ch chan AsyncResult[map[string]any], 
 	this.Options.Store("signInExpiration", now+86400000) // 24 hours
 
 	ch <- AsyncResult[map[string]any]{Value: response}
-	return nil
-}
-func (this *Grvt) InitializeClientAsync(optionalArgs ...any) <-chan AsyncResult[bool] {
-	ch := make(chan AsyncResult[bool], 1)
-	go this.initializeClientBody(ch, optionalArgs...)
-	return ch
-}
-func (this *Grvt) initializeClientBody(ch chan AsyncResult[bool], optionalArgs ...any) any {
-	defer close(ch)
-	defer ReturnPanicError(ch)
-	var params map[string]any = GetArgMap(optionalArgs, 0, map[string]any{})
-	_ = params
-	var builderFee *bool = this.SafeBool(params, "builderFee", this.SafeBool(this.Options, "builderFee", true)) // we shouldn't omit here
-	if !(builderFee != nil && *builderFee) {
-
-		ch <- AsyncResult[bool]{Value: false} // skip if builder fee is not enabled
-		return nil
-	}
-	var approvedBuilderFee *bool = this.SafeBool(this.Options, "approvedBuilderFee", false)
-	if approvedBuilderFee != nil && *approvedBuilderFee {
-
-		ch <- AsyncResult[bool]{Value: true} // skip if builder fee is already approved
-		return nil
-	}
-
-	r := <-promiseAll([]any{this.PrivateTradingPostFullV1GetAuthorizedBuilders(), this.LoadAccountInfosAsync()})
-	if r.Err != nil {
-		panic(r.Err)
-	}
-	var results []any = ListTyped(r.Value)
-	//
-	// {
-	//     "results": [{
-	//         "builder_account_id": "GRVT_MAIN_ACCOUNT_ID_HERE",
-	//         "max_futures_fee_rate": 0.001,
-	//         "max_spot_fee_rate": 0.0001
-	//     }]
-	// }
-	//
-	var currentBuilders map[string]any = SafeMapTyped(results, 0)
-	var approvedBuilder []any = SafeListTyped(currentBuilders, "results")
-	var length int = len(approvedBuilder)
-	var found bool = false
-	for i := 0; i < length; i++ {
-		var builderInfo map[string]any = SafeMapTyped(approvedBuilder, i)
-		var builderAccountId *string = this.SafeString(builderInfo, "builder_account_id")
-		if IsEqual(builderAccountId, this.SafeString(this.Options, "builder")) {
-			found = true
-			break
-		}
-	}
-	if found {
-		this.Options.Store("approvedBuilderFee", true)
-	} else {
-
-		{
-			func(this *Grvt) (ret_ any) {
-				defer func() {
-					if e := recover(); e != nil {
-						if e == "break" {
-							return
-						}
-						ret_ = func(this *Grvt) any {
-							// catch block:
-							this.Options.Store("builderFee", false) // disable builder fee if an error occurs
-							return nil
-						}(this)
-					}
-				}()
-				// try block:
-				var defaultFromAccountId *string = this.SafeString(this.Options, "userMainAccountId") // this.ethGetAddressFromPrivateKey (this.secret); // this.safeString (this.options, 'userMainAccountId');
-				var request any = map[string]any{
-					"main_account_id":      defaultFromAccountId,
-					"builder_account_id":   this.SafeString(this.Options, "builder"),
-					"max_futures_fee_rate": this.SafeString(this.Options, "builderRate"),
-					"max_spot_fee_rate":    this.SafeString(this.Options, "builderRate"),
-					"signature":            this.DefaultSignature(),
-				}
-				request = this.CreateSignedRequest(request, "EIP712_BUILDER_APPROVAL_TYPE")
-
-				r1 := <-this.PrivateTradingPostFullV1AuthorizeBuilder(this.Extend(request, params))
-				if r1.Err != nil {
-					panic(r1.Err)
-				}
-				authResponse := r1.Raw
-				//
-				// {
-				//     "result": {
-				//         "ack": "true",
-				//         "tx_id":"0"
-				//     }
-				// }
-				//
-				var authResult map[string]any = SafeMapTyped(authResponse, "result")
-				var ack *bool = this.SafeBool(authResult, "ack")
-				if ack == nil || *ack != true {
-					panic(ExchangeError("Builder authorization failed, " + this.Json(authResponse)))
-				}
-				this.Options.Store("approvedBuilderFee", true)
-				return nil
-			}(this)
-
-		}
-	}
-
-	ch <- AsyncResult[bool]{} // just c#
 	return nil
 }
 
@@ -2963,13 +2782,7 @@ func (this *Grvt) createOrderBody(ch chan AsyncResult[Order], symbol string, typ
 		paramsTrigger = this.Omit(paramsTriggerPrices, []any{"triggerDirection", "triggerPriceType", "closePosition"})
 	}
 	var eipType string = "EIP712_ORDER_TYPE"
-	var builderFee *bool = this.SafeBool(paramsTrigger, "builderFee", this.SafeBool(this.Options, "builderFee", true))
-	if builderFee != nil && *builderFee {
-		eipType = "EIP712_ORDER_WITH_BUILDER_TYPE"
-		orderRequest["builder"] = this.SafeString(this.Options, "builder")
-		orderRequest["builder_fee"] = this.SafeString(this.Options, "builderRate")
-	}
-	var paramsOmitted any = this.Omit(paramsTrigger, []any{"builderFee"})
+	var paramsOmitted any = paramsTrigger
 	var signedOrderRequest any = this.CreateSignedRequest(orderRequest, eipType)
 	var request map[string]any = map[string]any{
 		"order": signedOrderRequest,
@@ -3101,10 +2914,6 @@ func (this *Grvt) EipMessageForOrder(order any, structureType string) map[string
 		"legs":         legs,
 		"nonce":        GetValue(GetValue(order, "signature"), "nonce"),
 		"expiration":   GetValue(GetValue(order, "signature"), "expiration"),
-	}
-	if (structureType == "EIP712_ORDER_WITH_BUILDER_TYPE") && (*this.SafeBool(this.Options, "builderFee", true)) {
-		returnValue["builder"] = GetValue(order, "builder")
-		returnValue["builderFee"] = this.ParseToInt(Multiply(this.ConvertToBigIntCustom(this.FeeAmountMultiplier()), ParseFloat(GetValue(order, "builder_fee")))) // the order is matter for Multiply in go, b must be float64 otherwise the value would be 0
 	}
 	return returnValue
 }
@@ -4425,18 +4234,8 @@ func (this *Grvt) CreateSignedRequest(request any, structureType string, optiona
 			"nonce":         GetValue(GetValue(request, "signature"), "nonce"),
 			"expiration":    GetValue(GetValue(request, "signature"), "expiration"),
 		}
-	} else if (structureType == "EIP712_ORDER_TYPE") || (structureType == "EIP712_ORDER_WITH_BUILDER_TYPE") {
+	} else if structureType == "EIP712_ORDER_TYPE" {
 		messageData = this.EipMessageForOrder(request, structureType)
-	} else if structureType == "EIP712_BUILDER_APPROVAL_TYPE" {
-		var amountMultiplier any = this.ConvertToBigIntCustom(this.FeeAmountMultiplier())
-		messageData = map[string]any{
-			"mainAccountID":    GetValue(request, "main_account_id"),
-			"builderAccountID": GetValue(request, "builder_account_id"),
-			"maxFutureFeeRate": this.ParseToInt(Multiply(ParseFloat(GetValue(request, "max_futures_fee_rate")), amountMultiplier)),
-			"maxSpotFeeRate":   this.ParseToInt(Multiply(ParseFloat(GetValue(request, "max_spot_fee_rate")), amountMultiplier)),
-			"nonce":            GetValue(GetValue(request, "signature"), "nonce"),
-			"expiration":       GetValue(GetValue(request, "signature"), "expiration"),
-		}
 	} else if structureType == "EIP712_WALLETLOGIN_TYPE" {
 		messageData = map[string]any{
 			"signer":     GetValue(request, "address"),

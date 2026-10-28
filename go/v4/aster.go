@@ -950,9 +950,6 @@ func (this *Aster) Describe() any {
 			"fetchOpenOrders": map[string]any{
 				"warnIfNoSymbol": true,
 			},
-			"builderFee":  true,
-			"builder":     "0x1F5877C19e3777Cfd15F9d57253eA4aA5254Ec39",
-			"builderRate": "0.001",
 		},
 		"exceptions": map[string]any{
 			"exact": map[string]any{
@@ -3912,10 +3909,6 @@ func (this *Aster) CreateOrderRequest(symbol *string, typeVar *string, side *str
 	} else {
 		requestParams = this.OmitDict(params, omitKeys)
 	}
-	if (*this.SafeBool(this.Options, "builderFee", false)) && (market["swap"] == true) {
-		request["builder"] = this.SafeString(this.Options, "builder")
-		request["feeRate"] = this.SafeString(this.Options, "builderRate")
-	}
 	return this.Extend(request, requestParams)
 }
 
@@ -6050,110 +6043,7 @@ func (this *Aster) signInBody(ch chan AsyncResult[any], optionalArgs ...any) any
 		panic(NotSupported(this.Id + " after the latest update (v4.5.52), CCXT now expects the l1 private key to be provided in the credentials."))
 	}
 
-	r := <-this.InitializeClientAsync(params)
-	if r.Err != nil {
-		panic(r.Err)
-	}
-
 	ch <- AsyncResult[any]{Value: true}
-	return nil
-}
-func (this *Aster) InitializeClientAsync(optionalArgs ...any) <-chan AsyncResult[bool] {
-	ch := make(chan AsyncResult[bool], 1)
-	go this.initializeClientBody(ch, optionalArgs...)
-	return ch
-}
-func (this *Aster) initializeClientBody(ch chan AsyncResult[bool], optionalArgs ...any) any {
-	defer close(ch)
-	defer ReturnPanicError(ch)
-	var params map[string]any = GetArgMap(optionalArgs, 0, map[string]any{})
-	_ = params
-	var builderFee *bool = this.SafeBool(params, "builderFee", this.SafeBool(this.Options, "builderFee", true)) // we shouldn't omit here
-	if !(builderFee != nil && *builderFee) {
-
-		ch <- AsyncResult[bool]{Value: false} // skip if builder fee is not enabled
-		return nil
-	}
-	var approvedBuilderFee *bool = this.SafeBool(this.Options, "approvedBuilderFee", false)
-	if approvedBuilderFee != nil && *approvedBuilderFee {
-
-		ch <- AsyncResult[bool]{Value: true} // skip if builder fee is already approved
-		return nil
-	}
-
-	r := <-this.FapiPrivateGetV3Builder()
-	if r.Err != nil {
-		panic(r.Err)
-	}
-	result := r.Raw
-	//
-	//    [
-	//        {
-	//            "userAddress": "0x35a5B33Be664B09F78b5089eb6185f71c8a7f11f",
-	//            "builderAddress": "0x1F5877C19e3777Cfd15F9d57253eA4aA5254Ec39",
-	//            "maxFeeRate": "0.001",
-	//            "builderName": "ccxt"
-	//        }
-	//    ]
-	//
-	var approvedBuilders any = result
-	var length int = GetArrayLength(approvedBuilders)
-	var found bool = false
-	var builderAddress *string = this.SafeString(this.Options, "builder")
-	for i := 0; i < length; i++ {
-		var builderInfo map[string]any = SafeMapTyped(approvedBuilders, i)
-		var builderAccountId *string = this.SafeString(builderInfo, "builderAddress")
-		if builderAccountId == builderAddress || (builderAccountId != nil && builderAddress != nil && *builderAccountId == *builderAddress) {
-			found = true
-			break
-		}
-	}
-	if !found {
-		this.Options.Store("approvedBuilderFee", true)
-
-		{
-			func(this *Aster) (ret_ any) {
-				defer func() {
-					if e := recover(); e != nil {
-						if e == "break" {
-							return
-						}
-						ret_ = func(this *Aster) any {
-							// catch block:
-							this.Options.Store("approvedBuilderFee", false)
-							this.Options.Store("builderFee", false) // disable if err
-							return nil
-						}(this)
-					}
-				}()
-				// try block:
-				var request map[string]any = map[string]any{
-					"builder":          this.SafeString(this.Options, "builder"),
-					"builderName":      this.SafeString(this.Options, "builderName", "ccxt"),
-					"maxFeeRate":       this.SafeString(this.Options, "builderRate"),
-					"signatureChainId": this.SafeInteger(this.Options, "v3ChainId", 1666),
-					"asterChain":       "Mainnet",
-				}
-
-				r1 := <-this.FapiPrivatePostV3ApproveBuilder(this.Extend(request, params))
-				if r1.Err != nil {
-					panic(r1.Err)
-				}
-				authResponse := r1.Raw
-				//
-				// {"code": 200,"msg": "success"}
-				//
-				var codeRes *int64 = this.SafeInteger(authResponse, "code")
-				if codeRes == nil || *codeRes != 200 {
-					panic(ExchangeError("Builder authorization failed, " + this.Json(authResponse)))
-				}
-				return nil
-			}(this)
-
-		}
-	}
-
-	ch <- AsyncResult[bool]{} // just c#
 	return nil
 }
 func (this *Aster) HandleErrors(httpCode any, reason any, url any, method any, headers any, body string, response any, requestHeaders any, requestBody any) any {

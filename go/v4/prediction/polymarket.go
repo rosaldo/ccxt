@@ -569,9 +569,6 @@ func (this *Polymarket) Describe() any {
 			"ctfExchangeVersion":      "2",
 			"exchangeAddress":         "0xE111180000d2663C0091e4f400237545B87B996B",
 			"negRiskExchangeAddress":  "0xe2222d279d744050d28e00520010520000310F59",
-			"builder":                 "0xea409de8b037bb6ac664b6d12d6831b03cb04a37",
-			"builderFee":              true,
-			"feeRate":                 0,
 		},
 	})
 }
@@ -2975,7 +2972,6 @@ func (this *Polymarket) ParseOrderStatus(status *string) *string {
  * @param {string} [params.salt] order salt; defaults to a strictly-increasing millisecond value (pin it for idempotent retries)
  * @param {string} [params.timestamp] order timestamp; defaults to the current time in ms
  * @param {string} [params.expiration] unix-seconds expiration for GTD orders; defaults to '0' (no expiry)
- * @param {string} [params.builderCode] builder wallet address or full bytes32 builder code attached to the order for attribution (zero fee — tracking only); defaults to options.builder
  * @returns {object} a [prediction order structure](https://docs.ccxt.com/#/?id=prediction-order-structure)
  */
 func (this *Polymarket) CreateOrderAsync(outcome string, typeVar string, side string, amount any, optionalArgs ...any) <-chan ccxt.AsyncResult[ccxt.PredictionOrder] {
@@ -3197,30 +3193,8 @@ func (this *Polymarket) BuildClobOrderBody(outcome *string, typeVar *string, sid
 		return 1
 	}()
 	var bytes32Zero string = "0x0000000000000000000000000000000000000000000000000000000000000000"
-	// builder attribution: the order's bytes32 builder field packs the builder fee (bps,
-	// upper 12 bytes) and the builder wallet (lower 20 bytes); when options.builderFee is
-	// false the fee bytes stay zeroed, so orders are attributed for statistics only and
-	// the user is not charged; a full 32-byte builder code is passed through unchanged
-	var builderRaw *string = this.SafeStringLower2(params, "builder", "builderCode", this.SafeStringLower(this.Options, "builder"))
+	// fork: the signed order's bytes32 builder field is always zero — no builder attribution or fee
 	var builderBytes32 string = bytes32Zero
-	if builderRaw != nil {
-		var builderHex string = this.Remove0xPrefix(builderRaw)
-		if len(builderHex) <= 40 {
-			var builderFeeEnabled *bool = this.SafeBool(this.Options, "builderFee", true)
-			var feeRate any = 0
-			if builderFeeEnabled != nil && *builderFeeEnabled {
-				feeRate = ccxt.DerefScalar(this.SafeInteger(this.Options, "feeRate", 0))
-			}
-			var feeHex string = this.IntToBase16(feeRate)
-			feeHex = (strings.Repeat("0", max(24-len(feeHex), 0)) + feeHex)[max(len(feeHex)-24, 0):]
-			var addressHex string = (strings.Repeat("0", max(40-len(builderHex), 0)) + builderHex)[max(len(builderHex)-40, 0):]
-			var packedHex string = feeHex + addressHex
-			builderBytes32 = "0x" + packedHex
-		} else {
-			var paddedHex string = (strings.Repeat("0", max(64-len(builderHex), 0)) + builderHex)[max(len(builderHex)-64, 0):]
-			builderBytes32 = "0x" + paddedHex
-		}
-	}
 	// POLY_1271 (type 3): the order signer is the deposit wallet itself — the exchange calls
 	// wallet.isValidSignature and the inner ERC-7739 domain's verifyingContract is the wallet (the EOA
 	// still produces the signature and is checked on-chain as the wallet owner). Otherwise signer = EOA.
@@ -5576,7 +5550,6 @@ func (this *Polymarket) FetchOrder(id string, options ...FetchOrderOptions) (ccx
  * @param {string} [params.salt] order salt; defaults to a strictly-increasing millisecond value (pin it for idempotent retries)
  * @param {string} [params.timestamp] order timestamp; defaults to the current time in ms
  * @param {string} [params.expiration] unix-seconds expiration for GTD orders; defaults to '0' (no expiry)
- * @param {string} [params.builderCode] builder wallet address or full bytes32 builder code attached to the order for attribution (zero fee — tracking only); defaults to options.builder
  * @returns {object} a [prediction order structure](https://docs.ccxt.com/#/?id=prediction-order-structure)
  */
 func (this *Polymarket) CreateOrder(outcome string, typeVar string, side string, amount float64, options ...ccxt.CreateOrderOptions) (ccxt.PredictionOrder, error) {

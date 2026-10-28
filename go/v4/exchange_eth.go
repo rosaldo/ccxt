@@ -865,7 +865,7 @@ func (this *BaseExchange) lighterCreateClient(signer any, chainId uint32, privat
 }
 
 // safeIntOr mirrors safeInteger(request, key, default) used by the other
-// language bindings: a key that is absent (builderFee disabled) yields the
+// language bindings: a key that is absent yields the
 // default instead of panicking in SafeInt.
 func safeIntOr(v any, defaultValue int64) int64 {
 	if v == nil {
@@ -1496,8 +1496,6 @@ func toTypedDataTypes(rawTypes map[string]any, domain map[string]any) (map[strin
 	inferred := ""
 	if len(candidates) == 1 {
 		inferred = candidates[0]
-	} else if _, ok := rawTypes["OrderWithBuilderFee"]; ok {
-		inferred = "OrderWithBuilderFee"
 	} else if _, ok := rawTypes["Order"]; ok {
 		inferred = "Order"
 	} else {

@@ -588,9 +588,6 @@ func (this *Pacifica) Describe() any {
 		"options": map[string]any{
 			"agentAddress":          nil,
 			"apiKey":                nil,
-			"builderCode":           "CCXT",
-			"feeRate":               "0.01",
-			"builderFee":            true,
 			"batchOrdersMax":        10,
 			"defaultType":           "swap",
 			"defaultSlippage":       "0.5",
@@ -598,12 +595,6 @@ func (this *Pacifica) Describe() any {
 			"maxCostHugeWithApiKey": 4,
 			"marketHelperProps":     []any{},
 			"defaultMarginMode":     "cross",
-			"builderSupportOperations": map[string]any{
-				"create_market_order": true,
-				"create_limit_order":  true,
-				"create_stop_order":   true,
-				"set_position_tpsl":   true,
-			},
 		},
 		"features": map[string]any{
 			"default": map[string]any{
@@ -719,108 +710,6 @@ func (this *Pacifica) Describe() any {
 			},
 		},
 	})
-}
-func (this *Pacifica) InitializeClientAsync() <-chan AsyncResult[bool] {
-	ch := make(chan AsyncResult[bool], 1)
-	go this.initializeClientBody(ch)
-	return ch
-}
-func (this *Pacifica) initializeClientBody(ch chan AsyncResult[bool]) any {
-	defer close(ch)
-	defer ReturnPanicError(ch)
-	chSent := false
-	_ = chSent
-
-	{
-		func(this *Pacifica) (ret_ any) {
-			defer func() {
-				if e := recover(); e != nil {
-					if e == "break" {
-						return
-					}
-					ret_ = func(this *Pacifica) any {
-						// catch block:
-
-						ch <- AsyncResult[bool]{Value: false}
-						chSent = true
-						return nil
-
-					}(this)
-				}
-			}()
-			// try block:
-
-			r := <-this.HandleBuilderFeeApprovalAsync()
-			if r.Err != nil {
-				panic(r.Err)
-			}
-			return nil
-		}(this)
-		if chSent {
-			return nil
-		}
-
-	}
-
-	ch <- AsyncResult[bool]{Value: true}
-	return nil
-}
-func (this *Pacifica) HandleBuilderFeeApprovalAsync() <-chan AsyncResult[bool] {
-	ch := make(chan AsyncResult[bool], 1)
-	go this.handleBuilderFeeApprovalBody(ch)
-	return ch
-}
-func (this *Pacifica) handleBuilderFeeApprovalBody(ch chan AsyncResult[bool]) any {
-	defer close(ch)
-	defer ReturnPanicError(ch)
-	if this.IsSandboxModeEnabled {
-
-		ch <- AsyncResult[bool]{Value: false}
-		return nil
-	}
-	var buildFee *bool = this.SafeBool(this.Options, "builderFee", true)
-	if !(buildFee != nil && *buildFee) {
-
-		ch <- AsyncResult[bool]{Value: false} // skip if builder fee is not enabled
-		return nil
-	}
-	var approvedBuilderFee *bool = this.SafeBool(this.Options, "approvedBuilderFee", false)
-	if approvedBuilderFee != nil && *approvedBuilderFee {
-
-		ch <- AsyncResult[bool]{Value: true} // skip if builder fee is already approved
-		return nil
-	}
-
-	{
-		func(this *Pacifica) (ret_ any) {
-			defer func() {
-				if e := recover(); e != nil {
-					if e == "break" {
-						return
-					}
-					ret_ = func(this *Pacifica) any {
-						// catch block:
-						this.Options.Store("builderFee", false) // disable builder fee if an error occurs
-						return nil
-					}(this)
-				}
-			}()
-			// try block:
-			var builder *string = this.SafeString(this.Options, "builderCode", "CCXT") // case sensitive
-			var maxFeeRate *string = this.SafeString(this.Options, "feeRate", "0.01")
-
-			r := <-this.ApproveBuilderCodeAsync(builder, maxFeeRate)
-			if r.Err != nil {
-				panic(r.Err)
-			}
-			this.Options.Store("approvedBuilderFee", true)
-			return nil
-		}(this)
-
-	}
-
-	ch <- AsyncResult[bool]{Value: true}
-	return nil
 }
 
 /**
@@ -2096,10 +1985,6 @@ func (this *Pacifica) createOrderBody(ch chan AsyncResult[Order], symbol string,
 		}
 	}
 
-	r1 := <-this.InitializeClientAsync()
-	if r1.Err != nil {
-		panic(r1.Err)
-	}
 	requestoperationTypeVariable := this.CreateOrderRequest(symbol, SafeStringPtr(typeVar), SafeStringPtr(side), amount, price, params)
 	var request map[string]any = MapTyped(requestoperationTypeVariable[0])
 	var operationType *string = SafeStringPtr(requestoperationTypeVariable[1])
@@ -2392,10 +2277,6 @@ func (this *Pacifica) createOrdersBody(ch chan AsyncResult[[]Order], orders any,
 		}
 	}
 
-	r1 := <-this.InitializeClientAsync()
-	if r1.Err != nil {
-		panic(r1.Err)
-	}
 	var request any = this.CreateOrdersRequest(orders)
 
 	r2 := <-this.PrivatePostOrdersBatch(this.Extend(request, params))
@@ -2483,10 +2364,6 @@ func (this *Pacifica) cancelOrdersBody(ch chan AsyncResult[[]Order], ids any, op
 		}
 	}
 
-	r1 := <-this.InitializeClientAsync()
-	if r1.Err != nil {
-		panic(r1.Err)
-	}
 	if symbol == nil {
 		panic(ArgumentsRequired(this.Id + " cancelOrders() requires a \"symbol\" argument!"))
 	}
@@ -2613,10 +2490,6 @@ func (this *Pacifica) cancelAllOrdersBody(ch chan AsyncResult[[]Order], optional
 		}
 	}
 
-	r1 := <-this.InitializeClientAsync()
-	if r1.Err != nil {
-		panic(r1.Err)
-	}
 	var request any = this.CancelAllOrdersRequest(symbol, params)
 	var paramsOmitted map[string]any = this.OmitDict(params, []any{"excludeReduceOnly", "expiryWindow"})
 
@@ -2693,10 +2566,6 @@ func (this *Pacifica) cancelOrderBody(ch chan AsyncResult[Order], id any, option
 		}
 	}
 
-	r1 := <-this.InitializeClientAsync()
-	if r1.Err != nil {
-		panic(r1.Err)
-	}
 	if symbol == nil {
 		panic(ArgumentsRequired(this.Id + " cancelOrder() requires a symbol argument"))
 	}
@@ -2804,10 +2673,6 @@ func (this *Pacifica) editOrderBody(ch chan AsyncResult[Order], id string, symbo
 		}
 	}
 
-	r1 := <-this.InitializeClientAsync()
-	if r1.Err != nil {
-		panic(r1.Err)
-	}
 	var market map[string]any = this.Market(symbol)
 	var request any = this.EditOrderRequest(SafeStringPtr(id), symbol, typeVar, side, amount, price, market, params)
 	var paramsOmitted map[string]any = this.OmitDict(params, []any{"expiryWindow", "clientOrderId"})
@@ -5321,19 +5186,6 @@ func (this *Pacifica) PostActionRequest(operationType any, sigPayload map[string
 	this.CheckRequiredCredentials() // check credentials every post action
 	if IsEqual(operationType, "undefined") {
 		panic(ArgumentsRequired(Add(Add(this.Id+" action: ", operationType), " postActionRequest() requires \"operationType\"")))
-	}
-	if !this.IsSandboxModeEnabled {
-		var useBuilder any = this.HandleOption("postActionRequest", "builderFee", true)
-		var builderCode any = nil
-		if useBuilder == true {
-			builderCode = this.HandleOption("postActionRequest", "builderCode")
-		}
-		if builderCode != nil {
-			var isOperationSupportBuilder *bool = this.SafeBool(GetValue(this.Options, "builderSupportOperations"), operationType, false)
-			if isOperationSupportBuilder != nil && *isOperationSupportBuilder {
-				sigPayload["builder_code"] = builderCode
-			}
-		}
 	}
 	expiryWindow, paramsExpiryWindow := this.HandleOptionIntegerAndParams2(params, "postActionRequest", "expiryWindow", "expiry_window", 5000)
 	var timestamp *int64 = this.SafeInteger(paramsExpiryWindow, "timestamp", this.Milliseconds())
