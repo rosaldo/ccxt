@@ -5,6 +5,7 @@ package ccxt
 
 import (
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -60,10 +61,29 @@ func TestForkOkxOrderHasNoBrokerTagNorClientIdPrefix(t *testing.T) {
 // Source-level guard: none of the partner ids, broker tags or affiliate links upstream
 // shipped by default may come back.
 func TestForkSourceHasNoCcxtPartnerIdentifiers(t *testing.T) {
-	banned := regexp.MustCompile(`x-TKT5PX2F|x-cvBPrNm9|x-xcKtGhcu|x-R4BD3S82|"6956"|ec6dd3a7dd982d0b|nfqkvdjp|10000700011|AA03022abc|9e58cc35-5b5e-4133-92ec-166e3f077cb8|"ccxtfutures"|CCXTMODE|42ce8902-8585-448c-a1e8-0371a6ca7ca8|6b9ad766b55dBCDE|CCXT123456|b-WEEX111125|bc830de7-50f3-460b-9ee0-f430f83f9dad|p4sve|177321641268789|APCA-PARTNER-ID|OPEN-API-PARTNER|"BROKER-ID"|"Referrer"|X-Gate-Channel-Id|^\t\t\t"referral": `)
+	banned := regexp.MustCompile(`x-TKT5PX2F|x-cvBPrNm9|x-xcKtGhcu|x-R4BD3S82|"6956"|ec6dd3a7dd982d0b|nfqkvdjp|10000700011|AA03022abc|9e58cc35-5b5e-4133-92ec-166e3f077cb8|"ccxtfutures"|CCXTMODE|42ce8902-8585-448c-a1e8-0371a6ca7ca8|6b9ad766b55dBCDE|CCXT123456|b-WEEX111125|bc830de7-50f3-460b-9ee0-f430f83f9dad|p4sve|177321641268789|APCA-PARTNER-ID|OPEN-API-PARTNER|"BROKER-ID"|"Referrer"|X-Gate-Channel-Id|^\t\t\t"referral": |[?&](brokerId|broker_id|channel_code|partner|affiliate)=`)
 	walkGoSources(t, func(path string, line int, text string) {
 		if banned.MatchString(text) {
 			t.Errorf("%s:%d: %s", path, line, strings.TrimSpace(text))
 		}
 	})
+}
+
+// Bithumb WS "ticket" is the requester id Bithumb's own WS requires (apidocs.bithumb.com,
+// "Ticket Field": 요청자를 식별 할 수 있는 값, 필수 O). It goes only to ws-api.bithumb.com and
+// is kept; this pins it to a fixed "ccxt" or a UUID so no partner value slips in.
+func TestForkBithumbWsTicketIsNotAPartnerId(t *testing.T) {
+	src, err := os.ReadFile("pro/bithumb.go")
+	if err != nil {
+		t.Fatal(err)
+	}
+	tickets := regexp.MustCompile(`"ticket":\s*([^,\n]+)`).FindAllStringSubmatch(string(src), -1)
+	if len(tickets) == 0 {
+		t.Fatal("no ticket found in pro/bithumb.go")
+	}
+	for _, m := range tickets {
+		if v := strings.TrimSpace(m[1]); v != `"ccxt"` && v != "this.Uuid()" {
+			t.Errorf("unexpected bithumb ws ticket value: %s", v)
+		}
+	}
 }

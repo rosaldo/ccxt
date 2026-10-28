@@ -2,6 +2,7 @@
 
 > Generated from git by `scripts/gen-changelog.sh` — do not edit by hand.
 
+- **v5.0.2** (2026-10-28) · `fix` — okx ws: drop ?brokerId=9999 from the sandbox url (OKX demo ws needs no query param); guard tests for url broker params and the bithumb ws ticket
 - **v5.0.1** (2026-10-28) · `test` — remove upstream brokerId suite (tests/base, --idTests) that asserted the old CCXT partner ids; neutralize partner prefix in tests/types orders fixture
 - **v5.0.0** (2026-10-28) · `major` — Go module moves to the repository root as github.com/rosaldo/ccxt/v5 (was go/v4); tags are now vX.Y.Z
 - **v4.5.95** (2026-10-28) · `fix` — remove every CCXT partner id: affiliate links, broker ids, partner headers and client order id prefixes

@@ -113,20 +113,15 @@ func (this *Okx) GetUrl(channel any, optionalArgs ...any) any {
 	if ccxt.IsEqual(channel, nil) {
 		panic(ccxt.ArgumentsRequired(this.Id + " getUrl() requires a channel argument"))
 	}
-	var isSandbox any = ccxt.GetValue(this.Options, "sandboxMode")
-	var sandboxSuffix string = ""
-	if isSandbox == true {
-		sandboxSuffix = "?brokerId=9999"
-	}
 	var isBusiness bool = (access == "business")
 	var isPublic bool = (access == "public")
 	var url any = ccxt.GetValue(this.Urls["api"], "ws")
 	if isBusiness || (ccxt.GetIndexOf(channel, "candle") > -1) || (ccxt.IsEqual(channel, "orders-algo")) {
-		return ccxt.Add(ccxt.Add(url, "/business"), sandboxSuffix)
+		return ccxt.Add(url, "/business")
 	} else if isPublic {
-		return ccxt.Add(ccxt.Add(url, "/public"), sandboxSuffix)
+		return ccxt.Add(url, "/public")
 	}
-	return ccxt.Add(ccxt.Add(url, "/private"), sandboxSuffix)
+	return ccxt.Add(url, "/private")
 }
 func (this *Okx) SubscribeMultipleAsync(access string, channel any, optionalArgs ...any) <-chan ccxt.AsyncResult[any] {
 	ch := make(chan ccxt.AsyncResult[any], 1)
