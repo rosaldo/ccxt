@@ -32,10 +32,9 @@ func (this *Binanceus) Describe() any {
 				"sapiV2":  "https://api.binance.us/sapi/v2",
 				"sapiV3":  "https://api.binance.us/sapi/v3",
 			},
-			"www":      "https://www.binance.us",
-			"referral": "https://www.binance.us/?ref=35005074",
-			"doc":      "https://github.com/binance-us/binance-official-api-docs",
-			"fees":     "https://www.binance.us/en/fee/schedule",
+			"www":  "https://www.binance.us",
+			"doc":  "https://github.com/binance-us/binance-official-api-docs",
+			"fees": "https://www.binance.us/en/fee/schedule",
 		},
 		"fees": map[string]any{
 			"trading": map[string]any{

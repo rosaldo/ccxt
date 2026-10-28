@@ -168,11 +168,7 @@ func (this *Htx) Describe() any {
 				"v2Public":  "https://{hostname}",
 				"v2Private": "https://{hostname}",
 			},
-			"www": "https://www.huobi.com",
-			"referral": map[string]any{
-				"url":      "https://www.htx.com/invite/en-us/1h?invite_code=6rmm2223",
-				"discount": 0.15,
-			},
+			"www":  "https://www.huobi.com",
 			"doc":  []any{"https://huobiapi.github.io/docs/spot/v1/en/", "https://huobiapi.github.io/docs/dm/v1/en/", "https://huobiapi.github.io/docs/coin_margined_swap/v1/en/", "https://huobiapi.github.io/docs/usdt_swap/v1/en/", "https://www.huobi.com/en-us/opend/newApiPages/"},
 			"fees": "https://www.huobi.com/about/fee/",
 		},
@@ -1941,9 +1937,6 @@ func (this *Htx) Describe() any {
 			"fetchOrdersByStatesMethod":         "spot_private_get_v1_order_orders",
 			"createMarketBuyOrderRequiresPrice": true,
 			"language":                          "en-US",
-			"broker": map[string]any{
-				"id": "AA03022abc",
-			},
 			"accountsByType": map[string]any{
 				"spot":    "pro",
 				"funding": "pro",
@@ -5403,7 +5396,7 @@ func (this *Htx) fetchOrderBody(ch chan AsyncResult[Order], id any, optionalArgs
 	//             "id":438398393065481,
 	//             "symbol":"ethusdt",
 	//             "account-id":1528640,
-	//             "client-order-id":"AA03022abc2163433e-006b-480e-9ad1-d4781478c5e7",
+	//             "client-order-id":"2163433e-006b-480e-9ad1-d4781478c5e7",
 	//             "amount":"0.100000000000000000",
 	//             "price":"3000.000000000000000000",
 	//             "created-at":1640549994642,
@@ -6767,10 +6760,10 @@ func (this *Htx) ParseOrder(order any, optionalArgs ...any) Order {
 	//     [
 	//         {
 	//             "order-id": 936847569789079,
-	//             "client-order-id": "AA03022abc3a55e82c-0087-4fc2-beac-112fdebb1ee9"
+	//             "client-order-id": "3a55e82c-0087-4fc2-beac-112fdebb1ee9"
 	//         },
 	//         {
-	//             "client-order-id": "AA03022abcdb3baefb-3cfa-4891-8009-082b3d46ca82",
+	//             "client-order-id": "db3baefb-3cfa-4891-8009-082b3d46ca82",
 	//             "err-code": "account-frozen-balance-insufficient-error",
 	//             "err-msg": "trade account balance is not enough, left: `89`"
 	//         }
@@ -7205,8 +7198,9 @@ func (this *Htx) createSpotOrderRequestBody(ch chan AsyncResult[map[string]any],
 	var clientOrderId *string = this.SafeString2(paramsPostOnly, "clientOrderId", "client-order-id") // must be 64 chars max and unique within 24 hours
 	if clientOrderId == nil {
 		var broker map[string]any = SafeMapTyped(this.Options, "broker")
-		var brokerId *string = this.SafeString(broker, "id")
-		request["client-order-id"] = Add(brokerId, this.Uuid())
+		if brokerId := this.SafeString(broker, "id"); brokerId != nil {
+			request["client-order-id"] = Add(brokerId, this.Uuid())
+		}
 	} else {
 		request["client-order-id"] = clientOrderId
 	}
@@ -7457,8 +7451,9 @@ func (this *Htx) CreateContractOrderRequest(symbol *string, typeVar *string, sid
 		}
 	}
 	var broker map[string]any = SafeMapTyped(this.Options, "broker")
-	var brokerId *string = this.SafeString(broker, "id")
-	request["channel_code"] = brokerId
+	if brokerId := this.SafeString(broker, "id"); brokerId != nil {
+		request["channel_code"] = brokerId
+	}
 	var paramsOmitted any = this.Omit(query, []any{"reduceOnly", "triggerPrice", "stopPrice", "stopLossPrice", "takeProfitPrice", "triggerType", "leverRate", "timeInForce", "leverage", "trailingPercent", "trailingTriggerPrice", "hedged"})
 	return this.Extend(request, paramsOmitted)
 }
@@ -7879,10 +7874,10 @@ func (this *Htx) createOrdersBody(ch chan AsyncResult[[]Order], orders any, opti
 	//         "data": [
 	//             {
 	//                 "order-id": 936847569789079,
-	//                 "client-order-id": "AA03022abc3a55e82c-0087-4fc2-beac-112fdebb1ee9"
+	//                 "client-order-id": "3a55e82c-0087-4fc2-beac-112fdebb1ee9"
 	//             },
 	//             {
-	//                 "client-order-id": "AA03022abcdb3baefb-3cfa-4891-8009-082b3d46ca82",
+	//                 "client-order-id": "db3baefb-3cfa-4891-8009-082b3d46ca82",
 	//                 "err-code": "account-frozen-balance-insufficient-error",
 	//                 "err-msg": "trade account balance is not enough, left: `89`"
 	//             }
@@ -10424,8 +10419,8 @@ func (this *Htx) Sign(path string, optionalArgs ...any) any {
 			this.CheckRequiredCredentials()
 			if method == "POST" {
 				var options map[string]any = SafeMapTyped(this.Options, "broker")
-				var id *string = this.SafeString(options, "id", "AA03022abc")
-				if !isArrayParams {
+				var id *string = this.SafeString(options, "id")
+				if id != nil && !isArrayParams {
 					if (strings.Index(pathString, "cancel") < 0) && strings.HasSuffix(pathString, "order") {
 						// swap order placement
 						var channelCode *string = this.SafeString(params, "channel_code")

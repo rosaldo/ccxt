@@ -152,10 +152,9 @@ func (this *Bitrue) Describe() any {
 				"dapi":  "https://fapi.bitrue.com/dapi",
 				"kline": "https://www.bitrue.com/kline-api",
 			},
-			"www":      "https://www.bitrue.com",
-			"referral": "https://www.bitrue.com/affiliate/landing?cn=600000&inviteCode=EZWETQE",
-			"doc":      []any{"https://github.com/Bitrue-exchange/bitrue-official-api-docs", "https://www.bitrue.com/api-docs"},
-			"fees":     "https://bitrue.zendesk.com/hc/en-001/articles/4405479952537",
+			"www":  "https://www.bitrue.com",
+			"doc":  []any{"https://github.com/Bitrue-exchange/bitrue-official-api-docs", "https://www.bitrue.com/api-docs"},
+			"fees": "https://bitrue.zendesk.com/hc/en-001/articles/4405479952537",
 		},
 		"api": map[string]any{
 			"spot": map[string]any{

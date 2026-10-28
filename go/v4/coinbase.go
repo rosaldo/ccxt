@@ -163,10 +163,9 @@ func (this *Coinbase) Describe() any {
 			"api": map[string]any{
 				"rest": "https://api.coinbase.com",
 			},
-			"www":      "https://www.coinbase.com",
-			"doc":      []any{"https://docs.cdp.coinbase.com/coinbase-app/introduction/welcome", "https://docs.cdp.coinbase.com/coinbase-app/advanced-trade-apis/api-reference"},
-			"fees":     []any{"https://support.coinbase.com/customer/portal/articles/2109597-buy-sell-bank-transfer-fees", "https://www.coinbase.com/advanced-fees"},
-			"referral": "https://www.coinbase.com/join/58cbe25a355148797479dbd2",
+			"www":  "https://www.coinbase.com",
+			"doc":  []any{"https://docs.cdp.coinbase.com/coinbase-app/introduction/welcome", "https://docs.cdp.coinbase.com/coinbase-app/advanced-trade-apis/api-reference"},
+			"fees": []any{"https://support.coinbase.com/customer/portal/articles/2109597-buy-sell-bank-transfer-fees", "https://www.coinbase.com/advanced-fees"},
 		},
 		"requiredCredentials": map[string]any{
 			"apiKey": true,
@@ -543,7 +542,6 @@ func (this *Coinbase) Describe() any {
 		"options": map[string]any{
 			"mica":        true,
 			"usePrivate":  false,
-			"brokerId":    "ccxt",
 			"stablePairs": []any{"BUSD-USD", "CBETH-ETH", "DAI-USD", "GUSD-USD", "GYEN-USD", "PAX-USD", "PAX-USDT", "USDC-EUR", "USDC-GBP", "USDT-EUR", "USDT-GBP", "USDT-USD", "USDT-USDC", "WBTC-BTC"},
 			"fetchCurrencies": map[string]any{
 				"expires": 5000,
@@ -4204,9 +4202,13 @@ func (this *Coinbase) createOrderBody(ch chan AsyncResult[Order], symbol string,
 		}
 	}
 	var market map[string]any = this.Market(symbol)
-	var id *string = this.SafeString(this.Options, "brokerId", "ccxt")
+	// client_order_id is required: a plain uuid, or brokerId-uuid when the user configures a brokerId
+	var clientOrderIdDefault string = this.Uuid()
+	if id := this.SafeString(this.Options, "brokerId"); id != nil {
+		clientOrderIdDefault = *id + "-" + clientOrderIdDefault
+	}
 	var request map[string]any = map[string]any{
-		"client_order_id": *id + "-" + this.Uuid(),
+		"client_order_id": clientOrderIdDefault,
 		"product_id":      market["id"],
 		"side":            strings.ToUpper(side),
 	}

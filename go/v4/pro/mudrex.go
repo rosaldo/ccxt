@@ -34,9 +34,7 @@ func (this *Mudrex) Describe() any {
 				"ws": "wss://trade.mudrex.com/fapi/v1/price/ws/linear",
 			},
 		},
-		"options": map[string]any{
-			"broker": "42ce8902-8585-448c-a1e8-0371a6ca7ca8",
-		},
+		"options": map[string]any{},
 		"streaming": map[string]any{
 			"ping":      this.Ping,
 			"keepAlive": 20000,

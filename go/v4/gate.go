@@ -79,10 +79,6 @@ func (this *Gate) Describe() any {
 					"account":      "https://api-testnet.gateapi.io/api/v4",
 				},
 			},
-			"referral": map[string]any{
-				"url":      "https://www.gate.com/share/CCXTGATE",
-				"discount": 0.2,
-			},
 		},
 		"has": map[string]any{
 			"CORS":                           nil,
@@ -1578,9 +1574,6 @@ func (this *Gate) Describe() any {
 		"requiredCredentials": map[string]any{
 			"apiKey": true,
 			"secret": true,
-		},
-		"headers": map[string]any{
-			"X-Gate-Channel-Id": "ccxt",
 		},
 		"options": map[string]any{
 			"timeDifference":          0,

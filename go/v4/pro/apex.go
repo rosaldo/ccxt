@@ -53,10 +53,9 @@ func (this *Apex) Describe() any {
 					"private": "wss://qa-quote.omni.apex.exchange/realtime_private?v=2",
 				},
 			},
-			"www":      "https://apex.exchange/",
-			"doc":      "https://api-docs.pro.apex.exchange",
-			"fees":     "https://apex-pro.gitbook.io/apex-pro/apex-omni-live-now/trading-perpetual-contracts/trading-fees",
-			"referral": "https://omni.apex.exchange/trade",
+			"www":  "https://apex.exchange/",
+			"doc":  "https://api-docs.pro.apex.exchange",
+			"fees": "https://apex-pro.gitbook.io/apex-pro/apex-omni-live-now/trading-perpetual-contracts/trading-fees",
 		},
 		"options": map[string]any{},
 		"streaming": map[string]any{

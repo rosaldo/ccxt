@@ -2,6 +2,7 @@
 
 > Generated from git by `scripts/gen-changelog.sh` — do not edit by hand.
 
+- **v4.5.95** (2026-10-28) · `fix` — remove every CCXT partner id: affiliate links, broker ids, partner headers and client order id prefixes
 - **v4.5.94** (2026-10-28) · `docs` — README: install with go get github.com/rosaldo/ccxt/go/v4, usage, credits
 - **v4.5.93** (2026-10-28) · `fix` — finish the module rename: protobuf go_package descriptors and the cli build
 - **v4.5.92** (2026-10-28) · `test` — gate also runs the offline base suites (go/tests --baseTests, REST and WS)

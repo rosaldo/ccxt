@@ -3398,11 +3398,6 @@ func (this *Gate) requestPrivateBody(ch chan ccxt.AsyncResult[any], url any, req
 		"signature": signature,
 		"req_param": reqParams,
 	}
-	if (ccxt.IsEqual(channel, "spot.order_place")) || (ccxt.IsEqual(channel, "futures.order_place")) {
-		payload["req_header"] = map[string]any{
-			"X-Gate-Channel-Id": "ccxt",
-		}
-	}
 	var request map[string]any = map[string]any{
 		"id":      requestIdResolved,
 		"time":    time,

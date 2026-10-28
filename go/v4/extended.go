@@ -175,10 +175,9 @@ func (this *Extended) Describe() any {
 			"test": map[string]any{
 				"rest": "https://api.starknet.sepolia.{hostname}",
 			},
-			"www":      "https://app.extended.exchange",
-			"doc":      "https://api.docs.extended.exchange",
-			"fees":     "https://docs.extended.exchange/extended-resources/trading/trading-fees-and-rebates",
-			"referral": "",
+			"www":  "https://app.extended.exchange",
+			"doc":  "https://api.docs.extended.exchange",
+			"fees": "https://docs.extended.exchange/extended-resources/trading/trading-fees-and-rebates",
 		},
 		"api": map[string]any{
 			"v1": map[string]any{

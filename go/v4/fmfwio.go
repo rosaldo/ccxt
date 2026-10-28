@@ -24,10 +24,9 @@ func (this *Fmfwio) Describe() any {
 				"public":  "https://api.fmfw.io/api/3",
 				"private": "https://api.fmfw.io/api/3",
 			},
-			"www":      "https://fmfw.io",
-			"doc":      "https://api.fmfw.io/",
-			"fees":     "https://fmfw.io/fees-and-limits",
-			"referral": "https://fmfw.io/referral/da948b21d6c92d69",
+			"www":  "https://fmfw.io",
+			"doc":  "https://api.fmfw.io/",
+			"fees": "https://fmfw.io/fees-and-limits",
 		},
 		"fees": map[string]any{
 			"trading": map[string]any{

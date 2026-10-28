@@ -113,11 +113,10 @@ func (this *Lbank) Describe() any {
 				"rest":     "https://api.lbank.info",
 				"contract": "https://lbkperp.lbank.com",
 			},
-			"api2":     "https://api.lbkex.com",
-			"www":      "https://www.lbank.com",
-			"doc":      "https://www.lbank.com/en-US/docs/index.html",
-			"fees":     "https://support.lbank.site/hc/en-gb/articles/900000535703-Trading-Fees-From-14-00-on-April-7-2020-UTC-8-",
-			"referral": "https://www.lbank.com/login/?icode=7QCY",
+			"api2": "https://api.lbkex.com",
+			"www":  "https://www.lbank.com",
+			"doc":  "https://www.lbank.com/en-US/docs/index.html",
+			"fees": "https://support.lbank.site/hc/en-gb/articles/900000535703-Trading-Fees-From-14-00-on-April-7-2020-UTC-8-",
 		},
 		"api": map[string]any{
 			"spot": map[string]any{

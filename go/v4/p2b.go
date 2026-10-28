@@ -144,8 +144,7 @@ func (this *P2b) Describe() any {
 			"1d": "1d",
 		},
 		"urls": map[string]any{
-			"referral": "https://p2pb2b.com?referral=ee784c53",
-			"logo":     "https://github.com/user-attachments/assets/122f0c86-f3a6-4334-910f-4d8edc865696",
+			"logo": "https://github.com/user-attachments/assets/122f0c86-f3a6-4334-910f-4d8edc865696",
 			"api": map[string]any{
 				"public":  "https://api.p2pb2b.com/api/v2/public",
 				"private": "https://api.p2pb2b.com/api/v2",

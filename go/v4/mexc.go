@@ -159,10 +159,9 @@ func (this *Mexc) Describe() any {
 					"private": "https://api.mexc.com/api/v3/broker",
 				},
 			},
-			"www":      "https://www.mexc.com/",
-			"doc":      []any{"https://www.mexc.com/api-docs/spot-v3/introduction", "https://www.mexc.com/api-docs/futures/integration-guide"},
-			"fees":     []any{"https://www.mexc.com/fee"},
-			"referral": "https://www.mexc.com/register?inviteCode=mexc-1FQ1GNu1",
+			"www":  "https://www.mexc.com/",
+			"doc":  []any{"https://www.mexc.com/api-docs/spot-v3/introduction", "https://www.mexc.com/api-docs/futures/integration-guide"},
+			"fees": []any{"https://www.mexc.com/fee"},
 		},
 		"api": map[string]any{
 			"spot": map[string]any{
@@ -1039,7 +1038,6 @@ func (this *Mexc) Describe() any {
 			},
 			"recvWindow":     5 * 1000,
 			"maxTimeTillEnd": (90*86400)*1000 - 1,
-			"broker":         "CCXT",
 		},
 		"features": map[string]any{
 			"default": map[string]any{
@@ -8303,7 +8301,9 @@ func (this *Mexc) Sign(path string, optionalArgs ...any) any {
 			url = Add(url, "&"+"signature="+signature)
 			requestHeaders = map[string]any{
 				"X-MEXC-APIKEY": this.ApiKey,
-				"source":        this.SafeString(this.Options, "broker", "CCXT"),
+			}
+			if broker := this.SafeString(this.Options, "broker"); broker != nil {
+				AddElementToObject(requestHeaders, "source", broker)
 			}
 		}
 		if (method == "POST") || (method == "PUT") || (method == "DELETE") {
@@ -8331,7 +8331,9 @@ func (this *Mexc) Sign(path string, optionalArgs ...any) any {
 				"ApiKey":       this.ApiKey,
 				"Request-Time": timestamp,
 				"Content-Type": "application/json",
-				"source":       this.SafeString(this.Options, "broker", "CCXT"),
+			}
+			if broker := this.SafeString(this.Options, "broker"); broker != nil {
+				AddElementToObject(requestHeaders, "source", broker)
 			}
 			if method == "POST" {
 				auth = this.Json(paramsOmitted)

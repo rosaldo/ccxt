@@ -182,10 +182,6 @@ func (this *Coinsph) Describe() any {
 			"www":  "https://coins.ph/",
 			"doc":  []any{"https://coins-docs.github.io/rest-api"},
 			"fees": "https://support.coins.ph/hc/en-us/sections/4407198694681-Limits-Fees",
-			"referral": map[string]any{
-				"url":      "https://www.coins.ph/en-ph/register?invite_code=1371062463303277512&broker=9001",
-				"discount": 0.2,
-			},
 		},
 		"api": map[string]any{
 			"public": map[string]any{

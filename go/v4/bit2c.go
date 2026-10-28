@@ -120,9 +120,8 @@ func (this *Bit2c) Describe() any {
 			"api": map[string]any{
 				"rest": "https://bit2c.co.il",
 			},
-			"www":      "https://www.bit2c.co.il",
-			"referral": "https://bit2c.co.il/Aff/63bfed10-e359-420c-ab5a-ad368dab0baf",
-			"doc":      []any{"https://www.bit2c.co.il/home/api", "https://github.com/OferE/bit2c"},
+			"www": "https://www.bit2c.co.il",
+			"doc": []any{"https://www.bit2c.co.il/home/api", "https://github.com/OferE/bit2c"},
 		},
 		"api": map[string]any{
 			"public": map[string]any{

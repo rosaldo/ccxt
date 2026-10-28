@@ -123,10 +123,9 @@ func (this *Delta) Describe() any {
 				"public":  "https://api.delta.exchange",
 				"private": "https://api.delta.exchange",
 			},
-			"www":      "https://www.delta.exchange",
-			"doc":      []any{"https://docs.delta.exchange"},
-			"fees":     "https://www.delta.exchange/fees",
-			"referral": "https://www.delta.exchange/app/signup/?code=IULYNB",
+			"www":  "https://www.delta.exchange",
+			"doc":  []any{"https://docs.delta.exchange"},
+			"fees": "https://www.delta.exchange/fees",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

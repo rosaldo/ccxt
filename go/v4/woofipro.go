@@ -162,10 +162,6 @@ func (this *Woofipro) Describe() any {
 			"www":  "https://dex.woo.org",
 			"doc":  []any{"https://orderly.network/docs/build-on-omnichain/building-on-omnichain"},
 			"fees": []any{"https://dex.woo.org/en/orderly"},
-			"referral": map[string]any{
-				"url":      "https://dex.woo.org/en/trade?ref=CCXT",
-				"discount": 0.05,
-			},
 		},
 		"api": map[string]any{
 			"v1": map[string]any{
@@ -656,7 +652,6 @@ func (this *Woofipro) Describe() any {
 		},
 		"options": map[string]any{
 			"sandboxMode":              false,
-			"brokerId":                 "CCXT",
 			"verifyingContractAddress": "0x6F7a338F2aA472838dEFD3283eB360d4Dff5D203",
 		},
 		"features": map[string]any{
@@ -5049,8 +5044,8 @@ func (this *Woofipro) Sign(path string, optionalArgs ...any) any {
 		this.CheckRequiredCredentials()
 		if ((method == "POST") || (method == "PUT")) && ((path == "algo/order") || (path == "order") || (path == "batch-order")) {
 			var isSandboxMode *bool = this.SafeBool(this.Options, "sandboxMode", false)
-			if !(isSandboxMode != nil && *isSandboxMode) {
-				var brokerId *string = this.SafeString(this.Options, "brokerId", "CCXT")
+			var brokerId *string = this.SafeString(this.Options, "brokerId")
+			if !(isSandboxMode != nil && *isSandboxMode) && brokerId != nil {
 				if path == "batch-order" {
 					var ordersList []any = SafeListTyped(requestParams, "orders")
 					for i := 0; i < len(ordersList); i++ {

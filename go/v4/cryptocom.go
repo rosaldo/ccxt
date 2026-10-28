@@ -145,11 +145,7 @@ func (this *Cryptocom) Describe() any {
 				"v2":          "https://api.crypto.com/v2",
 				"derivatives": "https://deriv-api.crypto.com/v1",
 			},
-			"www": "https://crypto.com/",
-			"referral": map[string]any{
-				"url":      "https://crypto.com/exch/kdacthrnxt",
-				"discount": 0.75,
-			},
+			"www":  "https://crypto.com/",
 			"doc":  []any{"https://exchange-docs.crypto.com/exchange/v1/rest-ws/index.html", "https://exchange-docs.crypto.com/spot/index.html", "https://exchange-docs.crypto.com/derivatives/index.html"},
 			"fees": "https://crypto.com/exchange/document/fees-limits",
 		},
@@ -630,7 +626,6 @@ func (this *Cryptocom) Describe() any {
 				"TRC20":    "TRON",
 				"ARBITRUM": "ARB",
 			},
-			"broker": "CCXT",
 		},
 		"features": map[string]any{
 			"default": map[string]any{
@@ -1894,7 +1889,7 @@ func (this *Cryptocom) fetchOrderBody(ch chan AsyncResult[Order], id any, option
 	//         "result": {
 	//             "account_id": "ae075bef-1234-4321-bd6g-bb9007252a63",
 	//             "order_id": "6142909895025252686",
-	//             "client_oid": "CCXT_c2d2152cc32d40a3ae7fbf",
+	//             "client_oid": "c2d2152cc32d40a3ae7fbf",
 	//             "order_type": "LIMIT",
 	//             "time_in_force": "GOOD_TILL_CANCEL",
 	//             "side": "BUY",
@@ -1945,8 +1940,9 @@ func (this *Cryptocom) CreateOrderRequest(symbol any, typeVar any, side any, amo
 	if (uppercaseType == "LIMIT") || (uppercaseType == "STOP_LIMIT") || (uppercaseType == "TAKE_PROFIT_LIMIT") {
 		request["price"] = this.PriceToPrecision(symbol, price)
 	}
-	var broker *string = this.SafeString(this.Options, "broker", "CCXT")
-	request["broker_id"] = broker
+	if broker := this.SafeString(this.Options, "broker"); broker != nil {
+		request["broker_id"] = broker
+	}
 	marketType, paramsMarketType := this.HandleMarketTypeAndParams("createOrder", market, params)
 	marginModeparamsValueVariable := this.CustomHandleMarginModeAndParams("createOrder", paramsMarketType)
 	var marginMode *string = SafeStringPtr(marginModeparamsValueVariable[0])
@@ -2084,7 +2080,7 @@ func (this *Cryptocom) createOrderBody(ch chan AsyncResult[Order], symbol string
 	//         "code" : 0,
 	//         "result": {
 	//             "order_id": "6540219377766741832",
-	//             "client_oid": "CCXT_d6ef7c3db6c1495aa8b757"
+	//             "client_oid": "d6ef7c3db6c1495aa8b757"
 	//         }
 	//     }
 	//
@@ -2223,8 +2219,9 @@ func (this *Cryptocom) CreateAdvancedOrderRequest(symbol *string, typeVar *strin
 	if (uppercaseType == "LIMIT") || (uppercaseType == "STOP_LIMIT") || (uppercaseType == "TAKE_PROFIT_LIMIT") {
 		request["price"] = this.PriceToPrecision(symbol, price)
 	}
-	var broker *string = this.SafeString(this.Options, "broker", "CCXT")
-	request["broker_id"] = broker
+	if broker := this.SafeString(this.Options, "broker"); broker != nil {
+		request["broker_id"] = broker
+	}
 	var timeInForce *string = this.SafeStringUpper2(params, "timeInForce", "time_in_force")
 	if timeInForce != nil {
 		if timeInForce != nil && *timeInForce == "GTC" {
@@ -2498,7 +2495,7 @@ func (this *Cryptocom) cancelOrderBody(ch chan AsyncResult[Order], id any, optio
 	//         "code": 0,
 	//         "message": "NO_ERROR",
 	//         "result": {
-	//             "client_oid": "CCXT_c2d2152cc32d40a3ae7fbf",
+	//             "client_oid": "c2d2152cc32d40a3ae7fbf",
 	//             "order_id": "6142909895025252686"
 	//         }
 	//     }
@@ -2677,7 +2674,7 @@ func (this *Cryptocom) fetchOpenOrdersBody(ch chan AsyncResult[[]Order], optiona
 	//                 {
 	//                     "account_id": "ce075bef-1234-4321-bd6g-ff9007252e63",
 	//                     "order_id": "6530219477767564494",
-	//                     "client_oid": "CCXT_7ce730f0388441df9bc218",
+	//                     "client_oid": "7ce730f0388441df9bc218",
 	//                     "order_type": "LIMIT",
 	//                     "time_in_force": "GOOD_TILL_CANCEL",
 	//                     "side": "BUY",
@@ -3395,7 +3392,7 @@ func (this *Cryptocom) ParseOrder(order any, optionalArgs ...any) Order {
 	//
 	//     {
 	//         "order_id": "6540219377766741832",
-	//         "client_oid": "CCXT_d6ef7c3db6c1495aa8b757"
+	//         "client_oid": "d6ef7c3db6c1495aa8b757"
 	//     }
 	//
 	// fetchOpenOrders, fetchOrder, fetchOrders
@@ -3403,7 +3400,7 @@ func (this *Cryptocom) ParseOrder(order any, optionalArgs ...any) Order {
 	//     {
 	//         "account_id": "ce075bef-1234-4321-bd6g-ff9007252e63",
 	//         "order_id": "6530219477767564494",
-	//         "client_oid": "CCXT_7ce730f0388441df9bc218",
+	//         "client_oid": "7ce730f0388441df9bc218",
 	//         "order_type": "LIMIT",
 	//         "time_in_force": "GOOD_TILL_CANCEL",
 	//         "side": "BUY",
@@ -3809,7 +3806,7 @@ func (this *Cryptocom) fetchLedgerBody(ch chan AsyncResult[[]LedgerEntry], optio
 	//                     "trade_match_id": "4611686018455865176",
 	//                     "event_timestamp_ms": 1686804665013,
 	//                     "event_timestamp_ns": "1686804665013642422",
-	//                     "client_oid": "CCXT_d6ea7c5db6c1495aa8b758",
+	//                     "client_oid": "d6ea7c5db6c1495aa8b758",
 	//                     "taker_side": "",
 	//                     "side": "BUY",
 	//                     "instrument_name": "USD"
@@ -3839,7 +3836,7 @@ func (this *Cryptocom) ParseLedgerEntry(item any, optionalArgs ...any) LedgerEnt
 	//         "trade_match_id": "4611686018455865176",
 	//         "event_timestamp_ms": 1686804665013,
 	//         "event_timestamp_ns": "1686804665013642422",
-	//         "client_oid": "CCXT_d6ea7c5db6c1495aa8b758",
+	//         "client_oid": "d6ea7c5db6c1495aa8b758",
 	//         "taker_side": "",
 	//         "side": "BUY",
 	//         "instrument_name": "USD"

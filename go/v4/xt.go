@@ -135,10 +135,9 @@ func (this *Xt) Describe() any {
 				"inverse": "https://dapi.xt.com",
 				"user":    "https://api.xt.com",
 			},
-			"www":      "https://xt.com",
-			"referral": "https://www.xt.com/en/accounts/register?ref=9PTM9VW",
-			"doc":      []any{"https://doc.xt.com/", "https://github.com/xtpub/api-doc"},
-			"fees":     "https://www.xt.com/en/rate",
+			"www":  "https://xt.com",
+			"doc":  []any{"https://doc.xt.com/", "https://github.com/xtpub/api-doc"},
+			"fees": "https://www.xt.com/en/rate",
 		},
 		"api": map[string]any{
 			"public": map[string]any{
@@ -7936,14 +7935,6 @@ func (this *Xt) Sign(path string, optionalArgs ...any) any {
 		var defaultRecvWindow *string = this.SafeString(this.Options, "recvWindow")
 		var recvWindow *string = this.SafeString(query, "recvWindow", defaultRecvWindow)
 		var timestamp *string = this.NumberToString(this.Nonce())
-		if (payload == "/v4/order") || (payload == "/future/trade/v1/order/create") || (payload == "/future/trade/v1/entrust/create-plan") || (payload == "/future/trade/v1/entrust/create-profit") || (payload == "/future/trade/v1/order/create-batch") {
-			var id string = "CCXT"
-			if strings.Index(payload, "future") > -1 {
-				AddElementToObject(query, "clientMedia", id)
-			} else {
-				AddElementToObject(query, "media", id)
-			}
-		}
 		var isUndefinedBody bool = ((method == "GET") || (path == "order/{orderId}") || (path == "ws-token"))
 		if (method == "PUT") && (endpoint != nil && *endpoint == "spot") {
 			isUndefinedBody = false

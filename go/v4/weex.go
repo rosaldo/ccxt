@@ -202,9 +202,8 @@ func (this *Weex) Describe() any {
 				"contract":        "https://api-contract.weex.com",
 				"contractPrivate": "https://api-contract.weex.com",
 			},
-			"www":      "https://www.weex.com",
-			"doc":      []any{"https://www.weex.com/api-doc"},
-			"referral": "https://www.weex.com/register?vipCode=qfyh",
+			"www": "https://www.weex.com",
+			"doc": []any{"https://www.weex.com/api-doc"},
 		},
 		"api": map[string]any{
 			"public": map[string]any{
@@ -644,7 +643,6 @@ func (this *Weex) Describe() any {
 			"XBT": "XBT",
 		},
 		"options": map[string]any{
-			"partner":                 "b-WEEX111125",
 			"timeDifference":          0,
 			"adjustForTimeDifference": false,
 			"accountsByType": map[string]any{
@@ -3016,8 +3014,7 @@ func (this *Weex) CreateSpotOrderRequest(symbol string, typeVar string, side str
 	var clientOrderId *string = this.SafeString(params, "clientOrderId")
 	var paramsOmitted map[string]any = this.OmitDict(params, "clientOrderId")
 	if clientOrderId == nil {
-		var partner *string = this.SafeString(paramsOmitted, "partner", "b-WEEX111125")
-		clientOrderId = SafeStringPtr(*partner + "-" + this.Uuid22())
+		clientOrderId = SafeStringPtr(this.Uuid22()) // required by the exchange; no partner prefix
 	}
 	request["newClientOrderId"] = clientOrderId
 	// timeInForce is passed directly from params
@@ -3172,8 +3169,7 @@ func (this *Weex) CreateContractOrderRequest(symbol string, typeVar string, side
 	var timeInForce *string = this.SafeString(params, "timeInForce")
 	var clientOrderId *string = this.SafeString(params, "clientOrderId")
 	if clientOrderId == nil {
-		var partner *string = this.SafeString(params, "partner", "b-WEEX111125")
-		clientOrderId = SafeStringPtr(*partner + "-" + this.Uuid22())
+		clientOrderId = SafeStringPtr(this.Uuid22()) // required by the exchange; no partner prefix
 	}
 	var callerMethodName *string = this.SafeString(params, "callerMethodName")
 	if isTrigger {

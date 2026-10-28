@@ -167,10 +167,6 @@ func (this *Blofin) Describe() any {
 			"test": map[string]any{
 				"rest": "https://demo-trading-openapi.blofin.com",
 			},
-			"referral": map[string]any{
-				"url":      "https://blofin.com/register?referral_code=f79EsS",
-				"discount": 0.05,
-			},
 			"www": "https://www.blofin.com",
 			"doc": "https://blofin.com/docs",
 		},
@@ -767,7 +763,6 @@ func (this *Blofin) Describe() any {
 				},
 			},
 			"defaultType": "swap",
-			"brokerId":    "ec6dd3a7dd982d0b",
 			"fetchOpenOrders": map[string]any{
 				"method": "privateGetTradeOrdersPending",
 			},
@@ -1864,7 +1859,9 @@ func (this *Blofin) CreateOrderRequest(symbol *string, typeVar *string, side *st
 		"side":      side,
 		"orderType": typeVar,
 		"size":      this.AmountToPrecision(symbol, amount),
-		"brokerId":  this.SafeString(this.Options, "brokerId", "ec6dd3a7dd982d0b"),
+	}
+	if brokerId := this.SafeString(this.Options, "brokerId"); brokerId != nil {
+		request["brokerId"] = brokerId
 	}
 	var marginMode *string = nil
 	var query any = nil
@@ -1974,7 +1971,7 @@ func (this *Blofin) ParseOrder(order any, optionalArgs ...any) Order {
 	//     "slOrderPrice": null,
 	//     "cancelSource": "not_canceled",
 	//     "cancelSourceReason": null,
-	//     "brokerId": "ec6dd3a7dd982d0b"
+	//     "brokerId": "..."
 	//     "filled_amount": "1.000000000000000000", // filledAmount in "ws" watchOrders
 	//     "cancelSource": "", // only in WS
 	//     "instType": "SWAP", // only in WS
@@ -2193,8 +2190,10 @@ func (this *Blofin) CreateTpslOrderRequest(symbol string, typeVar string, side s
 		"instId":       market["id"],
 		"side":         side,
 		"positionSide": positionSide,
-		"brokerId":     this.SafeString(this.Options, "brokerId", "ec6dd3a7dd982d0b"),
 		"reduceOnly":   this.SafeBool(params, "reduceOnly", true),
+	}
+	if brokerId := this.SafeString(this.Options, "brokerId"); brokerId != nil {
+		request["brokerId"] = brokerId
 	}
 	if amount != nil {
 		request["size"] = this.AmountToPrecision(symbol, amount)

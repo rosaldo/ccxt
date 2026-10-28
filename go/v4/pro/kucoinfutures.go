@@ -23,9 +23,8 @@ func (this *Kucoinfutures) Describe() any {
 		"id":   "kucoinfutures",
 		"name": "KuCoin Futures",
 		"urls": map[string]any{
-			"logo":     "https://user-images.githubusercontent.com/1294454/147508995-9e35030a-d046-43a1-a006-6fabd981b554.jpg",
-			"www":      "https://futures.kucoin.com/",
-			"referral": "https://futures.kucoin.com/?rcode=E5wkqe",
+			"logo": "https://user-images.githubusercontent.com/1294454/147508995-9e35030a-d046-43a1-a006-6fabd981b554.jpg",
+			"www":  "https://futures.kucoin.com/",
 		},
 		"has": map[string]any{
 			"CORS":          nil,

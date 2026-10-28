@@ -106,10 +106,9 @@ func (this *Krakenfutures) Describe() any {
 				"public":       "https://futures.kraken.com/derivatives/api/",
 				"private":      "https://futures.kraken.com/derivatives/api/",
 			},
-			"www":      "https://futures.kraken.com/",
-			"doc":      []any{"https://docs.kraken.com/exchange/guides/futures/rest"},
-			"fees":     "https://support.kraken.com/hc/en-us/articles/360022835771-Transaction-fees-and-rebates-for-Kraken-Futures",
-			"referral": nil,
+			"www":  "https://futures.kraken.com/",
+			"doc":  []any{"https://docs.kraken.com/exchange/guides/futures/rest"},
+			"fees": "https://support.kraken.com/hc/en-us/articles/360022835771-Transaction-fees-and-rebates-for-Kraken-Futures",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

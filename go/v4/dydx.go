@@ -139,10 +139,9 @@ func (this *Dydx) Describe() any {
 				"nodeRpc":  "https://test-dydx-rpc.kingnodes.com",
 				"nodeRest": "https://test-dydx-rest.kingnodes.com",
 			},
-			"www":      "https://www.dydx.xyz",
-			"doc":      []any{"https://docs.dydx.xyz"},
-			"fees":     []any{"https://docs.dydx.exchange/introduction-trading_fees"},
-			"referral": "https://dydx.trade?ref=ccxt",
+			"www":  "https://www.dydx.xyz",
+			"doc":  []any{"https://docs.dydx.xyz"},
+			"fees": []any{"https://docs.dydx.exchange/introduction-trading_fees"},
 		},
 		"api": map[string]any{
 			"indexer": map[string]any{

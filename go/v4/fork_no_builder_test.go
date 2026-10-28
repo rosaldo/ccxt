@@ -6,6 +6,7 @@ package ccxt
 // a fake http.RoundTripper answers every request and records what was sent.
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -19,6 +20,7 @@ import (
 type recordingTransport struct {
 	mu     sync.Mutex
 	bodies []string
+	reply  string // fixed reply for every request; empty = hyperliquid-shaped default
 }
 
 func (rt *recordingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -28,10 +30,12 @@ func (rt *recordingTransport) RoundTrip(req *http.Request) (*http.Response, erro
 		body = string(raw)
 	}
 	rt.mu.Lock()
-	rt.bodies = append(rt.bodies, req.URL.String()+" "+body)
+	rt.bodies = append(rt.bodies, req.URL.String()+" "+fmt.Sprint(req.Header)+" "+body)
 	rt.mu.Unlock()
 	reply := `{"status":"ok","response":{"type":"default"}}`
-	if strings.Contains(body, `"type":"order"`) {
+	if rt.reply != "" {
+		reply = rt.reply
+	} else if strings.Contains(body, `"type":"order"`) {
 		reply = `{"status":"ok","response":{"type":"order","data":{"statuses":[{"resting":{"oid":1}}]}}}`
 	}
 	return &http.Response{
@@ -101,6 +105,20 @@ func TestForkHyperliquidCreateOrderPayloadHasNoBuilder(t *testing.T) {
 // default: none of the hardcoded attribution identifiers may come back.
 func TestForkSourceHasNoCcxtBuilderIdentifiers(t *testing.T) {
 	banned := regexp.MustCompile(`(?i)builderfee|0x6530512A6c89C7cfCEbC3BA7fcD9aDa5f30827a6|0x1F5877C19e3777Cfd15F9d57253eA4aA5254Ec39|0x21d2a053495994b1132a38cd1171acec40c6741e|0xea409de8b037bb6ac664b6d12d6831b03cb04a37|"257624"|\b718718\b|"CCXT1"|"builderCode":\s*"CCXT"|"builder":\s*"4500"`)
+	walkGoSources(t, func(path string, line int, text string) {
+		// the one allowed hit: hyperliquid parseTrade adds a third-party builder's charge to the fill fee
+		if path == "hyperliquid.go" && strings.Contains(text, `this.SafeString(trade, "builderFee")`) {
+			return
+		}
+		if banned.MatchString(text) {
+			t.Errorf("%s:%d: %s", path, line, strings.TrimSpace(text))
+		}
+	})
+}
+
+// walkGoSources calls fn for every line of every non-test .go file under this module.
+func walkGoSources(t *testing.T, fn func(path string, line int, text string)) {
+	t.Helper()
 	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() || !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {
 			return err
@@ -109,14 +127,8 @@ func TestForkSourceHasNoCcxtBuilderIdentifiers(t *testing.T) {
 		if err != nil {
 			return err
 		}
-		for i, line := range strings.Split(string(src), "\n") {
-			// the one allowed hit: hyperliquid parseTrade adds a third-party builder's charge to the fill fee
-			if path == "hyperliquid.go" && strings.Contains(line, `this.SafeString(trade, "builderFee")`) {
-				continue
-			}
-			if banned.MatchString(line) {
-				t.Errorf("%s:%d: %s", path, i+1, strings.TrimSpace(line))
-			}
+		for i, text := range strings.Split(string(src), "\n") {
+			fn(path, i+1, text)
 		}
 		return nil
 	})

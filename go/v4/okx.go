@@ -184,10 +184,6 @@ func (this *Okx) Describe() any {
 			"www":  "https://www.okx.com",
 			"doc":  "https://www.okx.com/docs-v5/en/",
 			"fees": "https://www.okx.com/pages/products/fees.html",
-			"referral": map[string]any{
-				"url":      "https://www.okx.com/join/CCXTCOM",
-				"discount": 0.2,
-			},
 			"test": map[string]any{
 				"rest": "https://{hostname}",
 			},
@@ -2243,7 +2239,6 @@ func (this *Okx) Describe() any {
 				"FUTURES": "FUTURES",
 				"OPTION":  "OPTION",
 			},
-			"brokerId": "6b9ad766b55dBCDE",
 		},
 		"features": map[string]any{
 			"default": map[string]any{
@@ -9358,8 +9353,10 @@ func (this *Okx) Sign(path string, optionalArgs ...any) any {
 		this.CheckRequiredCredentials()
 		// inject id in implicit api call
 		if (method == "POST") && ((path == "trade/batch-orders") || (path == "trade/order-algo") || (path == "trade/order")) {
-			var brokerId *string = this.SafeString(this.Options, "brokerId", "6b9ad766b55dBCDE")
-			if IsArray(params) {
+			var brokerId *string = this.SafeString(this.Options, "brokerId")
+			if brokerId == nil {
+				// no partner id: the request goes as the user built it
+			} else if IsArray(params) {
 				for i := 0; i < GetArrayLength(params); i++ {
 					var entry any = GetValue(params, i)
 					var clientOrderId *string = this.SafeString(entry, "clOrdId")

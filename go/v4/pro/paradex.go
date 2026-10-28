@@ -46,10 +46,9 @@ func (this *Paradex) Describe() any {
 			"test": map[string]any{
 				"ws": "wss://ws.api.testnet.paradex.trade/v1",
 			},
-			"www":      "https://www.paradex.trade/",
-			"doc":      "https://docs.api.testnet.paradex.trade/",
-			"fees":     "https://docs.paradex.trade/getting-started/trading-fees",
-			"referral": "",
+			"www":  "https://www.paradex.trade/",
+			"doc":  "https://docs.api.testnet.paradex.trade/",
+			"fees": "https://docs.paradex.trade/getting-started/trading-fees",
 		},
 		"options": map[string]any{
 			"sbe":              true,

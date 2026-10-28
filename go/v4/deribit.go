@@ -128,10 +128,6 @@ func (this *Deribit) Describe() any {
 			"www":  "https://www.deribit.com",
 			"doc":  []any{"https://docs.deribit.com/v2", "https://github.com/deribit"},
 			"fees": "https://www.deribit.com/pages/information/fees",
-			"referral": map[string]any{
-				"url":      "https://www.deribit.com/reg-1189.4038",
-				"discount": 0.1,
-			},
 		},
 		"api": map[string]any{
 			"public": map[string]any{

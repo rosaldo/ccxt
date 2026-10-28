@@ -46,10 +46,9 @@ func (this *Bybiteu) Describe() any {
 				"public":  "https://api-demo.{hostname}",
 				"private": "https://api-demo.{hostname}",
 			},
-			"www":      "https://www.bybit.com",
-			"doc":      []any{"https://bybit-exchange.github.io/docs/inverse/", "https://bybit-exchange.github.io/docs/linear/", "https://github.com/bybit-exchange"},
-			"fees":     "https://help.bybit.com/hc/en-us/articles/360039261154",
-			"referral": "https://www.bybit.com/invite?ref=XDK12WP",
+			"www":  "https://www.bybit.com",
+			"doc":  []any{"https://bybit-exchange.github.io/docs/inverse/", "https://bybit-exchange.github.io/docs/linear/", "https://github.com/bybit-exchange"},
+			"fees": "https://help.bybit.com/hc/en-us/articles/360039261154",
 		},
 		"has": map[string]any{
 			"CORS":   true,

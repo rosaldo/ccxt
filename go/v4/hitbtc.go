@@ -121,10 +121,9 @@ func (this *Hitbtc) Describe() any {
 				"public":  "https://api.hitbtc.com/api/3",
 				"private": "https://api.hitbtc.com/api/3",
 			},
-			"www":      "https://hitbtc.com",
-			"referral": "https://hitbtc.com/?ref_id=5a5d39a65d466",
-			"doc":      []any{"https://api.hitbtc.com", "https://github.com/hitbtc-com/hitbtc-api/blob/master/APIv2.md"},
-			"fees":     []any{"https://hitbtc.com/fees-and-limits", "https://support.hitbtc.com/hc/en-us/articles/115005148605-Fees-and-limits"},
+			"www":  "https://hitbtc.com",
+			"doc":  []any{"https://api.hitbtc.com", "https://github.com/hitbtc-com/hitbtc-api/blob/master/APIv2.md"},
+			"fees": []any{"https://hitbtc.com/fees-and-limits", "https://support.hitbtc.com/hc/en-us/articles/115005148605-Fees-and-limits"},
 		},
 		"api": map[string]any{
 			"public": map[string]any{

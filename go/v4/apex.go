@@ -156,10 +156,9 @@ func (this *Apex) Describe() any {
 				"public":  "https://testnet.omni.apex.exchange/api",
 				"private": "https://testnet.omni.apex.exchange/api",
 			},
-			"www":      "https://apex.exchange/",
-			"doc":      "https://api-docs.omni.apex.exchange",
-			"fees":     "https://apex-pro.gitbook.io/apex-pro/apex-omni-live-now/trading-perpetual-contracts/trading-fees",
-			"referral": "https://omni.apex.exchange/trade",
+			"www":  "https://apex.exchange/",
+			"doc":  "https://api-docs.omni.apex.exchange",
+			"fees": "https://apex-pro.gitbook.io/apex-pro/apex-omni-live-now/trading-perpetual-contracts/trading-fees",
 		},
 		"api": map[string]any{
 			"public": map[string]any{
@@ -301,7 +300,6 @@ func (this *Apex) Describe() any {
 		"commonCurrencies": map[string]any{},
 		"options": map[string]any{
 			"defaultType": "swap",
-			"brokerId":    "6956",
 		},
 		"features": map[string]any{
 			"default": map[string]any{
@@ -1851,7 +1849,9 @@ func (this *Apex) createOrderBody(ch chan AsyncResult[Order], symbol string, typ
 		"expiration":  this.ParseToInt(float64(timeNow)/1000) + (30*24)*60*60,
 		"timeInForce": timeInForce,
 		"clientId":    finalClientOrderId,
-		"brokerId":    this.SafeString(this.Options, "brokerId", "6956"),
+	}
+	if brokerId := this.SafeString(this.Options, "brokerId"); brokerId != nil {
+		request["brokerId"] = brokerId
 	}
 	if triggerPrice != nil {
 		request["triggerPrice"] = this.PriceToPrecision(symbol, triggerPrice)

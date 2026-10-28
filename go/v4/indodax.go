@@ -146,9 +146,8 @@ func (this *Indodax) Describe() any {
 				"public":  "https://indodax.com",
 				"private": "https://indodax.com/tapi",
 			},
-			"www":      "https://www.indodax.com",
-			"doc":      "https://github.com/btcid/indodax-official-api-docs",
-			"referral": "https://indodax.com/ref/testbitcoincoid/1",
+			"www": "https://www.indodax.com",
+			"doc": "https://github.com/btcid/indodax-official-api-docs",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

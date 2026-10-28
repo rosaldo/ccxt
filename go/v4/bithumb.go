@@ -4193,9 +4193,7 @@ func (this *Bithumb) Sign(path string, optionalArgs ...any) any {
 	var queryKeysLength int = len(queryKeys)
 	var hasQuery bool = (queryKeysLength > 0)
 	if apiName != nil && *apiName == "public" {
-		requestHeaders = map[string]any{
-			"OPEN-API-PARTNER": "CCXT",
-		}
+		requestHeaders = map[string]any{}
 		if hasQuery {
 			url = Add(url, "?"+this.Urlencode(query))
 		}
@@ -4204,8 +4202,7 @@ func (this *Bithumb) Sign(path string, optionalArgs ...any) any {
 		var isVersionedApi bool = (strings.HasPrefix(endpoint, "/v1/") || strings.HasPrefix(endpoint, "/v2/"))
 		if isVersionedApi {
 			requestHeaders = map[string]any{
-				"Accept":           "application/json",
-				"OPEN-API-PARTNER": "CCXT",
+				"Accept": "application/json",
 			}
 			var request map[string]any = map[string]any{
 				"access_key": this.ApiKey,
@@ -4247,12 +4244,11 @@ func (this *Bithumb) Sign(path string, optionalArgs ...any) any {
 			var signature string = this.Hmac(this.Encode(auth), this.Encode(this.Secret), sha512)
 			var signature64 string = this.StringToBase64(signature)
 			requestHeaders = map[string]any{
-				"Accept":           "application/json",
-				"Content-Type":     "application/x-www-form-urlencoded",
-				"Api-Key":          this.ApiKey,
-				"Api-Sign":         signature64,
-				"Api-Nonce":        nonce,
-				"OPEN-API-PARTNER": "CCXT",
+				"Accept":       "application/json",
+				"Content-Type": "application/x-www-form-urlencoded",
+				"Api-Key":      this.ApiKey,
+				"Api-Sign":     signature64,
+				"Api-Nonce":    nonce,
 			}
 		}
 	}

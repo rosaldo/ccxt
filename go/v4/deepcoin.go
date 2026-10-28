@@ -143,10 +143,6 @@ func (this *Deepcoin) Describe() any {
 			},
 			"www": "https://www.deepcoin.com/",
 			"doc": "https://www.deepcoin.com/docs",
-			"referral": map[string]any{
-				"url":      "https://s.deepcoin.com/UzkyODgy",
-				"discount": 0.1,
-			},
 		},
 		"api": map[string]any{
 			"public": map[string]any{

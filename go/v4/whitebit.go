@@ -142,10 +142,9 @@ func (this *Whitebit) Describe() any {
 					"private": "https://whitebit.com/api/v4",
 				},
 			},
-			"www":      "https://www.whitebit.com",
-			"doc":      "https://github.com/whitebit-exchange/api-docs",
-			"fees":     "https://whitebit.com/fee-schedule",
-			"referral": "https://whitebit.com/referral/d9bdf40e-28f2-4b52-b2f9-cd1415d82963",
+			"www":  "https://www.whitebit.com",
+			"doc":  "https://github.com/whitebit-exchange/api-docs",
+			"fees": "https://whitebit.com/fee-schedule",
 		},
 		"api": map[string]any{
 			"web": map[string]any{
@@ -615,7 +614,6 @@ func (this *Whitebit) Describe() any {
 			},
 			"networksById": map[string]any{},
 			"defaultType":  "spot",
-			"brokerId":     "ccxt",
 		},
 		"features": map[string]any{
 			"default": map[string]any{

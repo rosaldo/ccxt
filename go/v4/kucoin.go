@@ -132,8 +132,7 @@ func (this *Kucoin) Describe() any {
 			"withdraw":                             true,
 		},
 		"urls": map[string]any{
-			"logo":     "https://user-images.githubusercontent.com/51840849/87295558-132aaf80-c50e-11ea-9801-a2fb0c57c799.jpg",
-			"referral": "https://www.kucoin.com/ucenter/signup?rcode=E5wkqe",
+			"logo": "https://user-images.githubusercontent.com/51840849/87295558-132aaf80-c50e-11ea-9801-a2fb0c57c799.jpg",
 			"api": map[string]any{
 				"public":         "https://api.kucoin.com",
 				"private":        "https://api.kucoin.com",
@@ -1674,16 +1673,6 @@ func (this *Kucoin) Describe() any {
 					"GET": map[string]any{
 						"level3/snapshot": "v2",
 					},
-				},
-			},
-			"partner": map[string]any{
-				"spot": map[string]any{
-					"id":  "ccxt",
-					"key": "9e58cc35-5b5e-4133-92ec-166e3f077cb8",
-				},
-				"future": map[string]any{
-					"id":  "ccxtfutures",
-					"key": "1b327198-f30c-4f14-a0ac-918871282f15",
 				},
 			},
 			"accountsByType": map[string]any{

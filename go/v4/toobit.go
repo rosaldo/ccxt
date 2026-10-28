@@ -94,11 +94,8 @@ func (this *Toobit) Describe() any {
 				"common":  "https://api.toobit.com",
 				"private": "https://api.toobit.com",
 			},
-			"www": "https://www.toobit.com/",
-			"doc": []any{"https://api-docs.toobit.com/"},
-			"referral": map[string]any{
-				"url": "https://www.toobit.com/en-US/r?i=dvCpJj",
-			},
+			"www":  "https://www.toobit.com/",
+			"doc":  []any{"https://api-docs.toobit.com/"},
 			"fees": "https://www.toobit.com/fee",
 		},
 		"api": map[string]any{
@@ -4220,10 +4217,11 @@ func (this *Toobit) Sign(path string, optionalArgs ...any) any {
 			privateBody = Add(privateBody, "&signature="+signature)
 		}
 		var privateHeaders map[string]any = map[string]any{
-			"Referrer":          "CCXT",
-			"X-BB-APIKEY":       this.ApiKey,
-			"X-BB-API-PLATFORM": this.SafeString(this.Options, "brokerId", "177321641268789"),
-			"Content-Type":      "application/x-www-form-urlencoded",
+			"X-BB-APIKEY":  this.ApiKey,
+			"Content-Type": "application/x-www-form-urlencoded",
+		}
+		if brokerId := this.SafeString(this.Options, "brokerId"); brokerId != nil {
+			privateHeaders["X-BB-API-PLATFORM"] = brokerId
 		}
 		var requestBody any = nil
 		if isPost || isDelete {

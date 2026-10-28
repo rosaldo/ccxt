@@ -230,10 +230,9 @@ func (this *Derive) Describe() any {
 				"public":  "https://testnet.api.derive.xyz/v3/public",
 				"private": "https://testnet.api.derive.xyz/v3/private",
 			},
-			"www":      "https://www.derive.xyz/",
-			"doc":      "https://docs.derive.xyz/",
-			"fees":     "https://docs.derive.xyz/integrators/trading/trading-fees",
-			"referral": "https://www.derive.xyz/invite/3VB0B",
+			"www":  "https://www.derive.xyz/",
+			"doc":  "https://docs.derive.xyz/",
+			"fees": "https://docs.derive.xyz/integrators/trading/trading-fees",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

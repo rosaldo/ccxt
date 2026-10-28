@@ -77,10 +77,9 @@ func (this *Bitbns) Describe() any {
 				"v1":  "https://api.{hostname}/api/trade/v1",
 				"v2":  "https://api.{hostname}/api/trade/v2",
 			},
-			"www":      "https://bitbns.com",
-			"referral": "https://ref.bitbns.com/1090961",
-			"doc":      []any{"https://bitbns.com/trade/#/api-trading/"},
-			"fees":     "https://bitbns.com/fees",
+			"www":  "https://bitbns.com",
+			"doc":  []any{"https://bitbns.com/trade/#/api-trading/"},
+			"fees": "https://bitbns.com/fees",
 		},
 		"api": map[string]any{
 			"www": map[string]any{

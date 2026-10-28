@@ -119,10 +119,9 @@ func (this *Coinmate) Describe() any {
 			"api": map[string]any{
 				"rest": "https://coinmate.io/api",
 			},
-			"www":      "https://coinmate.io",
-			"fees":     "https://coinmate.io/fees",
-			"doc":      []any{"https://coinmate.docs.apiary.io", "https://coinmate.io/developers"},
-			"referral": "https://coinmate.io?referral=YTFkM1RsOWFObVpmY1ZjMGREQmpTRnBsWjJJNVp3PT0",
+			"www":  "https://coinmate.io",
+			"fees": "https://coinmate.io/fees",
+			"doc":  []any{"https://coinmate.docs.apiary.io", "https://coinmate.io/developers"},
 		},
 		"requiredCredentials": map[string]any{
 			"apiKey": true,

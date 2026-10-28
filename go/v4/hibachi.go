@@ -133,9 +133,6 @@ func (this *Hibachi) Describe() any {
 			},
 			"www": "https://www.hibachi.xyz/",
 			"doc": "https://api-doc.hibachi.xyz/",
-			"referral": map[string]any{
-				"url": "https://hibachi.xyz/r/ZBL2YFWIHU",
-			},
 		},
 		"api": map[string]any{
 			"public": map[string]any{

@@ -192,9 +192,8 @@ func (this *Bydfi) Describe() any {
 				"public":  "https://api.bydfi.com/api",
 				"private": "https://api.bydfi.com/api",
 			},
-			"www":      "https://bydfi.com/",
-			"doc":      "https://developers.bydfi.com/en/",
-			"referral": "https://partner.bydfi.com/j/DilWutCI",
+			"www": "https://bydfi.com/",
+			"doc": "https://developers.bydfi.com/en/",
 		},
 		"fees": map[string]any{},
 		"api": map[string]any{

@@ -185,10 +185,9 @@ func (this *Hashkey) Describe() any {
 				"public":  "https://api-glb.sim.hashkeydev.com",
 				"private": "https://api-glb.sim.hashkeydev.com",
 			},
-			"www":      "https://global.hashkey.com/",
-			"doc":      "https://hashkeyglobal-apidoc.readme.io/",
-			"fees":     "https://support.global.hashkey.com/hc/en-us/articles/13199900083612-HashKey-Global-Fee-Structure",
-			"referral": "https://global.hashkey.com/en-US/register/invite?invite_code=82FQUN",
+			"www":  "https://global.hashkey.com/",
+			"doc":  "https://hashkeyglobal-apidoc.readme.io/",
+			"fees": "https://support.global.hashkey.com/hc/en-us/articles/13199900083612-HashKey-Global-Fee-Structure",
 		},
 		"api": map[string]any{
 			"public": map[string]any{
@@ -443,7 +442,6 @@ func (this *Hashkey) Describe() any {
 			},
 		},
 		"options": map[string]any{
-			"broker":      "10000700011",
 			"recvWindow":  nil,
 			"sandboxMode": false,
 			"networks": map[string]any{
@@ -5569,7 +5567,9 @@ func (this *Hashkey) Sign(path string, optionalArgs ...any) any {
 				bodySigned = query
 			}
 		}
-		headersSigned["INPUT-SOURCE"] = this.SafeString(this.Options, "broker", "10000700011")
+		if broker := this.SafeString(this.Options, "broker"); broker != nil {
+			headersSigned["INPUT-SOURCE"] = broker
+		}
 		headersSigned["broker_sign"] = signature
 		var bodyResolved any = func() any {
 			if method == "GET" {

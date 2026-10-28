@@ -32,10 +32,6 @@ func (this *Myokx) Describe() any {
 			"www":  "https://my.okx.com",
 			"doc":  "https://my.okx.com/docs-v5/en/#overview",
 			"fees": "https://my.okx.com/pages/products/fees.html",
-			"referral": map[string]any{
-				"url":      "https://www.my.okx.com/join/CCXT2023",
-				"discount": 0.2,
-			},
 			"test": map[string]any{
 				"ws": "wss://wseeapap.okx.com:443/ws/v5",
 			},

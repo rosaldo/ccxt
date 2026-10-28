@@ -96,10 +96,9 @@ func (this *Grvt) Describe() any {
 				"privateTrading": "https://trades.testnet.grvt.io/",
 				"publicMarket":   "https://market-data.testnet.grvt.io/",
 			},
-			"www":      "https://grvt.io",
-			"referral": "https://grvt.io/?ref=WBLS9D1",
-			"doc":      []any{"https://api-docs.grvt.io/"},
-			"fees":     "https://help.grvt.io/en/articles/9614699-how-does-grvt-s-fee-model-work",
+			"www":  "https://grvt.io",
+			"doc":  []any{"https://api-docs.grvt.io/"},
+			"fees": "https://help.grvt.io/en/articles/9614699-how-does-grvt-s-fee-model-work",
 		},
 		"api": map[string]any{
 			"privateEdge": map[string]any{

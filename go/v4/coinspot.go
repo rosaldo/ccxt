@@ -117,9 +117,8 @@ func (this *Coinspot) Describe() any {
 				"public":  "https://www.coinspot.com.au/pubapi",
 				"private": "https://www.coinspot.com.au/api",
 			},
-			"www":      "https://www.coinspot.com.au",
-			"doc":      "https://www.coinspot.com.au/api",
-			"referral": "https://www.coinspot.com.au/register?code=PJURCU",
+			"www": "https://www.coinspot.com.au",
+			"doc": "https://www.coinspot.com.au/api",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

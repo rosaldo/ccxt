@@ -150,9 +150,8 @@ func (this *Backpack) Describe() any {
 				"public":  "https://api.backpack.exchange",
 				"private": "https://api.backpack.exchange",
 			},
-			"www":      "https://backpack.exchange/",
-			"doc":      "https://docs.backpack.exchange/",
-			"referral": "https://backpack.exchange/join/ccxt",
+			"www": "https://backpack.exchange/",
+			"doc": "https://docs.backpack.exchange/",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

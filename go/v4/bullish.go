@@ -148,9 +148,8 @@ func (this *Bullish) Describe() any {
 				"public":  "https://api.simnext.bullish-test.com/trading-api",
 				"private": "https://api.simnext.bullish-test.com/trading-api",
 			},
-			"www":      "https://bullish.com/",
-			"referral": "",
-			"doc":      []any{"https://api.exchange.bullish.com/docs/api/rest/"},
+			"www": "https://bullish.com/",
+			"doc": []any{"https://api.exchange.bullish.com/docs/api/rest/"},
 		},
 		"api": map[string]any{
 			"public": map[string]any{

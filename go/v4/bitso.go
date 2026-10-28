@@ -139,10 +139,9 @@ func (this *Bitso) Describe() any {
 			"test": map[string]any{
 				"rest": "https://stage.bitso.com/api",
 			},
-			"www":      "https://bitso.com",
-			"doc":      "https://bitso.com/api_info",
-			"fees":     "https://bitso.com/fees",
-			"referral": "https://bitso.com/?ref=itej",
+			"www":  "https://bitso.com",
+			"doc":  "https://bitso.com/api_info",
+			"fees": "https://bitso.com/fees",
 		},
 		"precisionMode": TICK_SIZE,
 		"options": map[string]any{

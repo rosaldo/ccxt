@@ -157,10 +157,6 @@ func (this *Lighter) Describe() any {
 			"www":  "https://lighter.xyz/",
 			"doc":  "https://apidocs.lighter.xyz/",
 			"fees": "https://docs.lighter.xyz/perpetual-futures/fees",
-			"referral": map[string]any{
-				"url":      "https://app.lighter.xyz/?referral=715955W9",
-				"discount": 0.1,
-			},
 		},
 		"api": map[string]any{
 			"root": map[string]any{

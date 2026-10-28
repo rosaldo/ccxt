@@ -133,10 +133,6 @@ func (this *Phemex) Describe() any {
 			"www":  "https://phemex.com",
 			"doc":  "https://phemex-docs.github.io/#overview",
 			"fees": "https://phemex.com/fees-conditions",
-			"referral": map[string]any{
-				"url":      "https://phemex.com/register?referralCode=EDNVJ",
-				"discount": 0.1,
-			},
 		},
 		"timeframes": map[string]any{
 			"1m":  "60",
@@ -840,7 +836,6 @@ func (this *Phemex) Describe() any {
 			},
 		},
 		"options": map[string]any{
-			"brokerId":                        "CCXT123456",
 			"x-phemex-request-expiry":         60,
 			"createOrderByQuoteRequiresPrice": true,
 			"networks": map[string]any{
@@ -3082,7 +3077,7 @@ func (this *Phemex) ParseSwapOrder(order any, optionalArgs ...any) map[string]an
 	// {
 	//        "bizError":"0",
 	//        "orderID":"bd720dff-5647-4596-aa4e-656bac87aaad",
-	//        "clOrdID":"ccxt2022843dffac9477b497",
+	//        "clOrdID":"2022843dffac9477b497",
 	//        "symbol":"LTCUSDT",
 	//        "side":"Buy",
 	//        "actionTimeNs":"1677667878751724052",
@@ -3297,7 +3292,7 @@ func (this *Phemex) createOrderBody(ch chan AsyncResult[Order], symbol string, t
 	var marketSettle *string = this.SafeString(market, "settle")
 	var isStableSettled bool = (marketSettle != nil && *marketSettle == "USDT") || (marketSettle != nil && *marketSettle == "USDC")
 	if clientOrderId == nil {
-		var brokerId *string = this.SafeString(this.Options, "brokerId", "CCXT123456")
+		var brokerId *string = this.SafeString(this.Options, "brokerId")
 		if brokerId != nil {
 			request["clOrdID"] = *brokerId + this.Uuid16()
 		}
@@ -6003,8 +5998,7 @@ func (this *Phemex) Sign(path string, optionalArgs ...any) any {
 		if method == "POST" {
 			var isOrderPlacement bool = (path == "g-orders") || (path == "spot/orders") || (path == "orders")
 			if isOrderPlacement {
-				if this.SafeString(params, "clOrdID") == nil {
-					var id *string = this.SafeString(this.Options, "brokerId", "CCXT123456")
+				if id := this.SafeString(this.Options, "brokerId"); id != nil && this.SafeString(params, "clOrdID") == nil {
 					AddElementToObject(params, "clOrdID", *id+this.Uuid16())
 				}
 			}

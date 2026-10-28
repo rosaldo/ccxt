@@ -28,10 +28,6 @@ func (this *Okxus) Describe() any {
 			"www":  "https://app.okx.com",
 			"doc":  "https://app.okx.com/docs-v5/en/#overview",
 			"fees": "https://app.okx.com/pages/products/fees.html",
-			"referral": map[string]any{
-				"url":      "https://www.app.okx.com/join/CCXT2023",
-				"discount": 0.2,
-			},
 			"test": map[string]any{
 				"rest": "https://{hostname}",
 			},

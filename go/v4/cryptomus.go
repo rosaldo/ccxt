@@ -162,10 +162,9 @@ func (this *Cryptomus) Describe() any {
 				"public":  "https://api.cryptomus.com",
 				"private": "https://api.cryptomus.com",
 			},
-			"www":      "https://cryptomus.com",
-			"doc":      "https://doc.cryptomus.com/personal",
-			"fees":     "https://cryptomus.com/tariffs",
-			"referral": "https://app.cryptomus.com/signup/?ref=JRP4yj",
+			"www":  "https://cryptomus.com",
+			"doc":  "https://doc.cryptomus.com/personal",
+			"fees": "https://cryptomus.com/tariffs",
 		},
 		"api": map[string]any{
 			"public": map[string]any{
@@ -964,7 +963,6 @@ func (this *Cryptomus) createOrderBody(ch chan AsyncResult[Order], symbol string
 	var request map[string]any = map[string]any{
 		"market":    market["id"],
 		"direction": side,
-		"tag":       "ccxt",
 	}
 	var clientOrderId *string = this.SafeString(params, "clientOrderId")
 	var paramsOmitted map[string]any = func() map[string]any {

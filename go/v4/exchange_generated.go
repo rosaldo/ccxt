@@ -272,7 +272,6 @@ func (this *BaseExchange) Describe() any {
 			"doc":            nil,
 			"api_management": nil,
 			"fees":           nil,
-			"referral":       nil,
 		},
 		"api": nil,
 		"requiredCredentials": map[string]any{

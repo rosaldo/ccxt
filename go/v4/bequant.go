@@ -33,10 +33,9 @@ func (this *Bequant) Describe() any {
 				"public":  "https://api.bequant.io/api/3",
 				"private": "https://api.bequant.io/api/3",
 			},
-			"www":      "https://bequant.io",
-			"doc":      []any{"https://api.bequant.io/"},
-			"fees":     []any{"https://bequant.io/fees-and-limits"},
-			"referral": "https://bequant.io/referral/dd104e3bee7634ec",
+			"www":  "https://bequant.io",
+			"doc":  []any{"https://api.bequant.io/"},
+			"fees": []any{"https://bequant.io/fees-and-limits"},
 		},
 	})
 }

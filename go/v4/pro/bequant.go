@@ -39,10 +39,9 @@ func (this *Bequant) Describe() any {
 					"private": "wss://api.bequant.io/api/3/ws/trading",
 				},
 			},
-			"www":      "https://bequant.io",
-			"doc":      []any{"https://api.bequant.io/"},
-			"fees":     []any{"https://bequant.io/fees-and-limits"},
-			"referral": "https://bequant.io",
+			"www":  "https://bequant.io",
+			"doc":  []any{"https://api.bequant.io/"},
+			"fees": []any{"https://bequant.io/fees-and-limits"},
 		},
 	})
 }

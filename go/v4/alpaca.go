@@ -511,9 +511,6 @@ func (this *Alpaca) Describe() any {
 				},
 			},
 		},
-		"headers": map[string]any{
-			"APCA-PARTNER-ID": "ccxt",
-		},
 		"options": map[string]any{
 			"minCostUSD":      10,
 			"defaultExchange": "CBSE",
@@ -1876,7 +1873,7 @@ func (this *Alpaca) fetchOrdersBody(ch chan AsyncResult[[]Order], optionalArgs .
 	//     [
 	//         {
 	//           "id": "cbaf12d7-69b8-49c0-a31b-b46af35c755c",
-	//           "client_order_id": "ccxt_b36156ae6fd44d098ac9c179bab33efd",
+	//           "client_order_id": "b36156ae6fd44d098ac9c179bab33efd",
 	//           "created_at": "2023-11-17T04:21:42.234579Z",
 	//           "updated_at": "2023-11-17T04:22:34.442765Z",
 	//           "submitted_at": "2023-11-17T04:21:42.233357Z",
@@ -2089,7 +2086,7 @@ func (this *Alpaca) ParseOrder(order any, optionalArgs ...any) Order {
 	//
 	//    {
 	//        "id":"6ecfcc34-4bed-4b53-83ba-c564aa832a81",
-	//        "client_order_id":"ccxt_1c6ceab0b5e84727b2f1c0394ba17560",
+	//        "client_order_id":"1c6ceab0b5e84727b2f1c0394ba17560",
 	//        "created_at":"2022-06-14T13:59:30.224037068Z",
 	//        "updated_at":"2022-06-14T13:59:30.224037068Z",
 	//        "submitted_at":"2022-06-14T13:59:30.221856828Z",

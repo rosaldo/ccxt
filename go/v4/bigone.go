@@ -115,10 +115,9 @@ func (this *Bigone) Describe() any {
 				"contractPrivate": "https://{hostname}/api/contract/v2",
 				"webExchange":     "https://{hostname}/api/",
 			},
-			"www":      "https://big.one",
-			"doc":      "https://open.big.one/docs/api.html",
-			"fees":     "https://bigone.zendesk.com/hc/en-us/articles/115001933374-BigONE-Fee-Policy",
-			"referral": "https://b1.run/users/new?code=D3LLBVFT",
+			"www":  "https://big.one",
+			"doc":  "https://open.big.one/docs/api.html",
+			"fees": "https://bigone.zendesk.com/hc/en-us/articles/115001933374-BigONE-Fee-Policy",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

@@ -129,10 +129,9 @@ func (this *Latoken) Describe() any {
 			"api": map[string]any{
 				"rest": "https://api.latoken.com",
 			},
-			"www":      "https://latoken.com",
-			"doc":      []any{"https://api.latoken.com"},
-			"fees":     "https://latoken.com/fees",
-			"referral": "https://latoken.com/invite?r=mvgp2djk",
+			"www":  "https://latoken.com",
+			"doc":  []any{"https://api.latoken.com"},
+			"fees": "https://latoken.com/fees",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

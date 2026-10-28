@@ -156,10 +156,9 @@ func (this *Ndax) Describe() any {
 				"public":  "https://api.ndax.io:8443/AP",
 				"private": "https://api.ndax.io:8443/AP",
 			},
-			"www":      "https://ndax.io",
-			"doc":      []any{"https://apidoc.ndax.io/"},
-			"fees":     "https://ndax.io/fees",
-			"referral": "https://one.ndax.io/bfQiSL",
+			"www":  "https://ndax.io",
+			"doc":  []any{"https://apidoc.ndax.io/"},
+			"fees": "https://ndax.io/fees",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

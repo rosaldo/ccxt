@@ -128,10 +128,9 @@ func (this *Cex) Describe() any {
 				"public":  "https://trade.cex.io/api/spot/rest-public",
 				"private": "https://trade.cex.io/api/spot/rest",
 			},
-			"www":      "https://cex.io",
-			"doc":      "https://trade.cex.io/docs/",
-			"fees":     []any{"https://cex.io/fee-schedule", "https://cex.io/limits-commissions"},
-			"referral": "https://cex.io/r/0/up105393824/0/",
+			"www":  "https://cex.io",
+			"doc":  "https://trade.cex.io/docs/",
+			"fees": []any{"https://cex.io/fee-schedule", "https://cex.io/limits-commissions"},
 		},
 		"api": map[string]any{
 			"public": map[string]any{

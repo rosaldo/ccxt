@@ -248,11 +248,7 @@ func (this *Binance) Describe() any {
 				"papi":          "https://papi.binance.com/papi/v1",
 				"papiV2":        "https://papi.binance.com/papi/v2",
 			},
-			"www": "https://www.binance.com",
-			"referral": map[string]any{
-				"url":      "https://accounts.binance.com/register?ref=CCXTCOM",
-				"discount": 0.1,
-			},
+			"www":            "https://www.binance.com",
 			"doc":            []any{"https://developers.binance.com/en"},
 			"api_management": "https://www.binance.com/en/usercenter/settings/api-management",
 			"fees":           "https://www.binance.com/en/fee/schedule",
@@ -2988,14 +2984,6 @@ func (this *Binance) Describe() any {
 			"newOrderRespType": map[string]any{
 				"market": "FULL",
 				"limit":  "FULL",
-			},
-			"broker": map[string]any{
-				"spot":    "x-TKT5PX2F",
-				"margin":  "x-TKT5PX2F",
-				"future":  "x-cvBPrNm9",
-				"swap":    "x-cvBPrNm9",
-				"option":  "x-xcKtGhcu",
-				"inverse": "x-xcKtGhcu",
 			},
 			"accountsByType": map[string]any{
 				"main":    "MAIN",
@@ -7915,7 +7903,7 @@ func (this *Binance) editSpotOrderBody(ch chan AsyncResult[Order], id string, sy
 	//             "symbol": "BTCUSDT",
 	//             "orderId": 16383176297,
 	//             "orderListId": -1,
-	//             "clientOrderId": "x-TKT5PX2F22ecb58eb9074fb1be018c",
+	//             "clientOrderId": "22ecb58eb9074fb1be018c",
 	//             "transactTime": 1670891847932,
 	//             "price": "13500.00000000",
 	//             "origQty": "0.00085000",
@@ -8372,7 +8360,7 @@ func (this *Binance) editOrdersBody(ch chan AsyncResult[[]Order], orders any, op
 	//          "orderId": 650640530,
 	//          "symbol": "LTCUSDT",
 	//          "status": "NEW",
-	//          "clientOrderId": "x-xcKtGhcu32184eb13585491289bbaf",
+	//          "clientOrderId": "32184eb13585491289bbaf",
 	//          "price": "54.00",
 	//          "avgPrice": "0.00",
 	//          "origQty": "0.100",
@@ -8470,7 +8458,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//         "symbol": "BTCUSDT",
 	//         "orderId": 16383176297,
 	//         "orderListId": -1,
-	//         "clientOrderId": "x-TKT5PX2F22ecb58eb9074fb1be018c",
+	//         "clientOrderId": "22ecb58eb9074fb1be018c",
 	//         "transactTime": 1670891847932,
 	//         "price": "13500.00000000",
 	//         "origQty": "0.00085000",
@@ -8533,7 +8521,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//       "symbol": "BTCUSDT",
 	//       "orderId": 5403233939,
 	//       "orderListId": -1,
-	//       "clientOrderId": "x-TKT5PX2F5e669e75b6c14f69a2c43e",
+	//       "clientOrderId": "5e669e75b6c14f69a2c43e",
 	//       "transactTime": 1617151923742,
 	//       "price": "0.00000000",
 	//       "origQty": "0.00050000",
@@ -8561,7 +8549,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//       "symbol": "ETHUSD_PERP",
 	//       "pair": "ETHUSD",
 	//       "status": "FILLED",
-	//       "clientOrderId": "x-xcKtGhcu3e2d1503fdd543b3b02419",
+	//       "clientOrderId": "3e2d1503fdd543b3b02419",
 	//       "price": "0",
 	//       "avgPrice": "4522.14",
 	//       "origQty": "1",
@@ -8626,7 +8614,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//         "goodTillDate": 0,
 	//         "avgPrice": "0",
 	//         "origQty": "0.010",
-	//         "clientOrderId": "x-xcKtGhcu02573c6f15e544e990057b",
+	//         "clientOrderId": "02573c6f15e544e990057b",
 	//         "positionSide": "BOTH",
 	//         "cumQty": "0.000",
 	//         "updateTime": 1707110415436,
@@ -8649,7 +8637,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//         "orderId": 71275227732,
 	//         "avgPrice": "0.00",
 	//         "origQty": "1",
-	//         "clientOrderId": "x-xcKtGhcuca5af3acfb5044198c5398",
+	//         "clientOrderId": "ca5af3acfb5044198c5398",
 	//         "positionSide": "BOTH",
 	//         "cumQty": "0",
 	//         "updateTime": 1707110994334,
@@ -8664,7 +8652,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	// createOrder, fetchOpenOrders, fetchOpenOrder: portfolio margin linear swap and future conditional
 	//
 	//     {
-	//         "newClientStrategyId": "x-xcKtGhcu27f109953d6e4dc0974006",
+	//         "newClientStrategyId": "27f109953d6e4dc0974006",
 	//         "strategyId": 3645916,
 	//         "strategyStatus": "NEW",
 	//         "strategyType": "STOP",
@@ -8687,7 +8675,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	// createOrder, fetchOpenOrders: portfolio margin inverse swap and future conditional
 	//
 	//     {
-	//         "newClientStrategyId": "x-xcKtGhcuc6b86f053bb34933850739",
+	//         "newClientStrategyId": "c6b86f053bb34933850739",
 	//         "strategyId": 1423462,
 	//         "strategyStatus": "NEW",
 	//         "strategyType": "STOP",
@@ -8708,7 +8696,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	// createOrder, cancelAllOrders, cancelOrder: portfolio margin spot margin
 	//
 	//     {
-	//         "clientOrderId": "x-TKT5PX2Fe9ef29d8346440f0b28b86",
+	//         "clientOrderId": "e9ef29d8346440f0b28b86",
 	//         "cummulativeQuoteQty": "0.00000000",
 	//         "executedQty": "0.00000000",
 	//         "fills": [],
@@ -8729,7 +8717,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//     {
 	//         "symbol": "BTCUSDT",
 	//         "orderId": 24700763749,
-	//         "clientOrderId": "x-TKT5PX2F6f724c2a4af6425f98c7b6",
+	//         "clientOrderId": "6f724c2a4af6425f98c7b6",
 	//         "price": "35000.00000000",
 	//         "origQty": "0.00100000",
 	//         "executedQty": "0.00000000",
@@ -8753,7 +8741,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//
 	//     {
 	//         "strategyId": 3733211,
-	//         "newClientStrategyId": "x-xcKtGhcuaf166172ed504cd1bc0396",
+	//         "newClientStrategyId": "af166172ed504cd1bc0396",
 	//         "strategyType": "STOP",
 	//         "strategyStatus": "CANCELED",
 	//         "origQty": "0.010",
@@ -8777,7 +8765,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	// fetchOrders: portfolio margin linear and inverse swap conditional
 	//
 	//     {
-	//         "newClientStrategyId": "x-xcKtGhcuaf166172ed504cd1bc0396",
+	//         "newClientStrategyId": "af166172ed504cd1bc0396",
 	//         "strategyId": 3733211,
 	//         "strategyStatus": "CANCELLED",
 	//         "strategyType": "STOP",
@@ -8806,7 +8794,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//         "orderId": 3697213934,
 	//         "symbol": "BTCUSDT",
 	//         "status": "NEW",
-	//         "clientOrderId": "x-xcKtGhcufb20c5a7761a4aa09aa156",
+	//         "clientOrderId": "fb20c5a7761a4aa09aa156",
 	//         "price": "33000.00",
 	//         "avgPrice": "0.00000",
 	//         "origQty": "0.010",
@@ -8836,7 +8824,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//         "symbol": "BTCUSD_PERP",
 	//         "pair": "BTCUSD",
 	//         "status": "NEW",
-	//         "clientOrderId": "x-xcKtGhcubbde7ba93b1a4ab881eff3",
+	//         "clientOrderId": "bbde7ba93b1a4ab881eff3",
 	//         "price": "35000",
 	//         "avgPrice": "0",
 	//         "origQty": "1",
@@ -8862,7 +8850,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//         "orderId": 264895013409,
 	//         "symbol": "BTCUSDT",
 	//         "status": "NEW",
-	//         "clientOrderId": "x-xcKtGhcu6278f1adbdf14f74ab432e",
+	//         "clientOrderId": "6278f1adbdf14f74ab432e",
 	//         "price": "35000",
 	//         "avgPrice": "0",
 	//         "origQty": "0.010",
@@ -8887,7 +8875,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//         "symbol": "ETHUSD_PERP",
 	//         "pair": "ETHUSD",
 	//         "status": "NEW",
-	//         "clientOrderId": "x-xcKtGhcuec11030474204ab08ba2c2",
+	//         "clientOrderId": "ec11030474204ab08ba2c2",
 	//         "price": "2500",
 	//         "avgPrice": "0",
 	//         "origQty": "1",
@@ -8906,7 +8894,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	// fetchOpenOrder: inverse portfolio margin conditional
 	//
 	//     {
-	//         "newClientStrategyId": "x-xcKtGhcu2da9c765294b433994ffce",
+	//         "newClientStrategyId": "2da9c765294b433994ffce",
 	//         "strategyId": 1423501,
 	//         "strategyStatus": "NEW",
 	//         "strategyType": "STOP",
@@ -8966,7 +8954,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//     {
 	//         "status": "S",
 	//         "orderId": "edf82072-9f42-4d47-b09e-602c8f1b35c9",
-	//         "clientOrderId": "x-TKT5PX2F989bcdc4d06c430e92b8f4"
+	//         "clientOrderId": "989bcdc4d06c430e92b8f4"
 	//     }
 	//
 	// cancelOrder: tokenized equities
@@ -9031,7 +9019,7 @@ func (this *Binance) ParseOrder(order any, optionalArgs ...any) Order {
 	//         "status": "NEW",
 	//         "createdAt": 1785924334509,
 	//         "updatedAt": 1785924334514,
-	//         "clientOrderId": "x-TKT5PX2F989bcdc4d06c430e92b8f4",
+	//         "clientOrderId": "989bcdc4d06c430e92b8f4",
 	//         "trades": []
 	//     }
 	//
@@ -9241,7 +9229,7 @@ func (this *Binance) createOrdersBody(ch chan AsyncResult[[]Order], orders any, 
 	//          "orderId": 650640530,
 	//          "symbol": "LTCUSDT",
 	//          "status": "NEW",
-	//          "clientOrderId": "x-xcKtGhcu32184eb13585491289bbaf",
+	//          "clientOrderId": "32184eb13585491289bbaf",
 	//          "price": "54.00",
 	//          "avgPrice": "0.00",
 	//          "origQty": "0.100",
@@ -9564,14 +9552,8 @@ func (this *Binance) GenerateClientOrderId(optionalArgs ...any) string {
 			idMarketType = SafeStringPtr("inverse")
 		}
 	}
-	var defaultId string = "x-xcKtGhcu" // inverse, option
-	if (idMarketType != nil && *idMarketType == "spot") || (idMarketType != nil && *idMarketType == "margin") {
-		defaultId = "x-TKT5PX2F"
-	} else if (idMarketType != nil && *idMarketType == "future") || (idMarketType != nil && *idMarketType == "swap") {
-		defaultId = "x-cvBPrNm9"
-	}
 	var broker map[string]any = SafeMapTyped(this.Options, "broker")
-	var brokerId *string = this.SafeString(broker, idMarketType, defaultId)
+	var brokerId *string = this.SafeString(broker, idMarketType, "")
 	return *brokerId + this.Uuid22()
 }
 
@@ -10770,7 +10752,7 @@ func (this *Binance) fetchOrdersBody(ch chan AsyncResult[[]Order], optionalArgs 
 	//             "symbol": "ETHUSD_PERP",
 	//             "pair": "ETHUSD",
 	//             "status": "CANCELED",
-	//             "clientOrderId": "x-xcKtGhcu4b3e3d8515dd4dc5ba9ccc",
+	//             "clientOrderId": "4b3e3d8515dd4dc5ba9ccc",
 	//             "price": "2000",
 	//             "avgPrice": "0.00",
 	//             "origQty": "1",
@@ -10794,7 +10776,7 @@ func (this *Binance) fetchOrdersBody(ch chan AsyncResult[[]Order], optionalArgs 
 	//             "orderId": 259235347005,
 	//             "symbol": "BTCUSDT",
 	//             "status": "CANCELED",
-	//             "clientOrderId": "x-xcKtGhcu402881c9103f42bdb4183b",
+	//             "clientOrderId": "402881c9103f42bdb4183b",
 	//             "price": "35000",
 	//             "avgPrice": "0.00000",
 	//             "origQty": "0.010",
@@ -10817,7 +10799,7 @@ func (this *Binance) fetchOrdersBody(ch chan AsyncResult[[]Order], optionalArgs 
 	//
 	//     [
 	//         {
-	//             "newClientStrategyId": "x-xcKtGhcuaf166172ed504cd1bc0396",
+	//             "newClientStrategyId": "af166172ed504cd1bc0396",
 	//             "strategyId": 3733211,
 	//             "strategyStatus": "CANCELLED",
 	//             "strategyType": "STOP",
@@ -10847,7 +10829,7 @@ func (this *Binance) fetchOrdersBody(ch chan AsyncResult[[]Order], optionalArgs 
 	//         {
 	//             "symbol": "BTCUSDT",
 	//             "orderId": 24684460474,
-	//             "clientOrderId": "x-TKT5PX2Fe9ef29d8346440f0b28b86",
+	//             "clientOrderId": "e9ef29d8346440f0b28b86",
 	//             "price": "35000.00000000",
 	//             "origQty": "0.00100000",
 	//             "executedQty": "0.00000000",
@@ -11231,7 +11213,7 @@ func (this *Binance) fetchOpenOrderBody(ch chan AsyncResult[Order], id any, opti
 	//         "orderId": 3697213934,
 	//         "symbol": "BTCUSDT",
 	//         "status": "NEW",
-	//         "clientOrderId": "x-xcKtGhcufb20c5a7761a4aa09aa156",
+	//         "clientOrderId": "fb20c5a7761a4aa09aa156",
 	//         "price": "33000.00",
 	//         "avgPrice": "0.00000",
 	//         "origQty": "0.010",
@@ -11261,7 +11243,7 @@ func (this *Binance) fetchOpenOrderBody(ch chan AsyncResult[Order], id any, opti
 	//         "symbol": "BTCUSD_PERP",
 	//         "pair": "BTCUSD",
 	//         "status": "NEW",
-	//         "clientOrderId": "x-xcKtGhcubbde7ba93b1a4ab881eff3",
+	//         "clientOrderId": "bbde7ba93b1a4ab881eff3",
 	//         "price": "35000",
 	//         "avgPrice": "0",
 	//         "origQty": "1",
@@ -11287,7 +11269,7 @@ func (this *Binance) fetchOpenOrderBody(ch chan AsyncResult[Order], id any, opti
 	//         "orderId": 264895013409,
 	//         "symbol": "BTCUSDT",
 	//         "status": "NEW",
-	//         "clientOrderId": "x-xcKtGhcu6278f1adbdf14f74ab432e",
+	//         "clientOrderId": "6278f1adbdf14f74ab432e",
 	//         "price": "35000",
 	//         "avgPrice": "0",
 	//         "origQty": "0.010",
@@ -11312,7 +11294,7 @@ func (this *Binance) fetchOpenOrderBody(ch chan AsyncResult[Order], id any, opti
 	//         "symbol": "ETHUSD_PERP",
 	//         "pair": "ETHUSD",
 	//         "status": "NEW",
-	//         "clientOrderId": "x-xcKtGhcuec11030474204ab08ba2c2",
+	//         "clientOrderId": "ec11030474204ab08ba2c2",
 	//         "price": "2500",
 	//         "avgPrice": "0",
 	//         "origQty": "1",
@@ -11331,7 +11313,7 @@ func (this *Binance) fetchOpenOrderBody(ch chan AsyncResult[Order], id any, opti
 	// linear portfolio margin conditional
 	//
 	//     {
-	//         "newClientStrategyId": "x-xcKtGhcu2205fde44418483ca21874",
+	//         "newClientStrategyId": "2205fde44418483ca21874",
 	//         "strategyId": 4084339,
 	//         "strategyStatus": "NEW",
 	//         "strategyType": "STOP",
@@ -11354,7 +11336,7 @@ func (this *Binance) fetchOpenOrderBody(ch chan AsyncResult[Order], id any, opti
 	// inverse portfolio margin conditional
 	//
 	//     {
-	//         "newClientStrategyId": "x-xcKtGhcu2da9c765294b433994ffce",
+	//         "newClientStrategyId": "2da9c765294b433994ffce",
 	//         "strategyId": 1423501,
 	//         "strategyStatus": "NEW",
 	//         "strategyType": "STOP",

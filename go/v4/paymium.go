@@ -56,10 +56,9 @@ func (this *Paymium) Describe() any {
 			"api": map[string]any{
 				"rest": "https://paymium.com/api",
 			},
-			"www":      "https://www.paymium.com",
-			"fees":     "https://www.paymium.com/page/help/fees",
-			"doc":      []any{"https://github.com/Paymium/api-documentation", "https://www.paymium.com/page/developers", "https://paymium.github.io/api-documentation/"},
-			"referral": "https://www.paymium.com/page/sign-up?referral=eDAzPoRQFMvaAB8sf-qj",
+			"www":  "https://www.paymium.com",
+			"fees": "https://www.paymium.com/page/help/fees",
+			"doc":  []any{"https://github.com/Paymium/api-documentation", "https://www.paymium.com/page/developers", "https://paymium.github.io/api-documentation/"},
 		},
 		"api": map[string]any{
 			"public": map[string]any{

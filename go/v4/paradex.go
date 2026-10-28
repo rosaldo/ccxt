@@ -138,10 +138,9 @@ func (this *Paradex) Describe() any {
 				"v1": "https://api.testnet.{hostname}/v1",
 				"v2": "https://api.testnet.{hostname}/v2",
 			},
-			"www":      "https://www.paradex.trade/",
-			"doc":      "https://docs.api.testnet.paradex.trade/",
-			"fees":     "https://docs.paradex.trade/getting-started/trading-fees",
-			"referral": "https://app.paradex.trade/r/ccxt24",
+			"www":  "https://www.paradex.trade/",
+			"doc":  "https://docs.api.testnet.paradex.trade/",
+			"fees": "https://docs.paradex.trade/getting-started/trading-fees",
 		},
 		"api": map[string]any{
 			"public": map[string]any{
@@ -623,7 +622,6 @@ func (this *Paradex) Describe() any {
 		"commonCurrencies": map[string]any{},
 		"options": map[string]any{
 			"paradexAccount": nil,
-			"broker":         "CCXT",
 		},
 		"features": map[string]any{
 			"spot": nil,
@@ -5039,8 +5037,10 @@ func (this *Paradex) Sign(path string, optionalArgs ...any) any {
 		}
 	} else if apiName != nil && *apiName == "private" {
 		var privateHeaders map[string]any = map[string]any{
-			"Accept":          "application/json",
-			"PARADEX-PARTNER": this.SafeString(this.Options, "broker", "CCXT"),
+			"Accept": "application/json",
+		}
+		if broker := this.SafeString(this.Options, "broker"); broker != nil {
+			privateHeaders["PARADEX-PARTNER"] = broker
 		}
 		var privateBody *string = nil
 		// TODO: optimize

@@ -2768,7 +2768,6 @@ func (this *Zebpay) Sign(path string, optionalArgs ...any) any {
 			}
 			bodySigned = JsonStringify(paramsBody)
 			headersSigned = map[string]any{
-				"Referrer":     "ccxt",
 				"Content-Type": "application/json",
 			}
 		}
@@ -2787,7 +2786,6 @@ func (this *Zebpay) Sign(path string, optionalArgs ...any) any {
 			signature = this.Hmac(this.Encode(bodySigned), this.Encode(this.Secret), sha256, "hex")
 		}
 		headersSigned = map[string]any{
-			"Referrer":         "ccxt",
 			"X-AUTH-APIKEY":    this.ApiKey,
 			"X-AUTH-SIGNATURE": signature,
 		}

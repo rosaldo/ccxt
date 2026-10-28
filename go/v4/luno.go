@@ -122,8 +122,7 @@ func (this *Luno) Describe() any {
 			"setPositionMode":              false,
 		},
 		"urls": map[string]any{
-			"referral": "https://www.luno.com/invite/44893A",
-			"logo":     "https://user-images.githubusercontent.com/1294454/27766607-8c1a69d8-5ede-11e7-930c-540b5eb9be24.jpg",
+			"logo": "https://user-images.githubusercontent.com/1294454/27766607-8c1a69d8-5ede-11e7-930c-540b5eb9be24.jpg",
 			"api": map[string]any{
 				"public":          "https://api.luno.com/api",
 				"private":         "https://api.luno.com/api",

@@ -38,10 +38,6 @@ func (this *Aster) Describe() any {
 			},
 			"doc":  "https://github.com/asterdex/api-docs",
 			"fees": "https://docs.asterdex.com/product/asterex-simple/fees-and-slippage",
-			"referral": map[string]any{
-				"url":      "https://www.asterdex.com/en/referral/aA1c2B",
-				"discount": 0.1,
-			},
 		},
 		"has": map[string]any{
 			"CORS":                                 nil,

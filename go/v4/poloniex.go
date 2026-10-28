@@ -126,10 +126,9 @@ func (this *Poloniex) Describe() any {
 			"test": map[string]any{
 				"spot": "https://sand-spot-api-gateway.poloniex.com",
 			},
-			"www":      "https://www.poloniex.com",
-			"doc":      "https://api-docs.poloniex.com/spot/",
-			"fees":     "https://poloniex.com/fees",
-			"referral": "https://poloniex.com/signup?c=UBFZJRPJ",
+			"www":  "https://www.poloniex.com",
+			"doc":  "https://api-docs.poloniex.com/spot/",
+			"fees": "https://poloniex.com/fees",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

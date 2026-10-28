@@ -147,10 +147,9 @@ func (this *Pacifica) Describe() any {
 				"public":  "https://test-api.{hostname}",
 				"private": "https://test-api.{hostname}",
 			},
-			"www":      "https://www.pacifica.fi",
-			"doc":      "https://docs.pacifica.fi/api-documentation/api/rest-api",
-			"fees":     "https://docs.pacifica.fi/trading-on-pacifica/trading-fees",
-			"referral": "https://app.pacifica.fi?referral=ccxt",
+			"www":  "https://www.pacifica.fi",
+			"doc":  "https://docs.pacifica.fi/api-documentation/api/rest-api",
+			"fees": "https://docs.pacifica.fi/trading-on-pacifica/trading-fees",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

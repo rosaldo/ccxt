@@ -137,10 +137,6 @@ func (this *Modetrade) Describe() any {
 			},
 			"www": "https://trade.mode.network",
 			"doc": []any{"https://orderly.network/docs/build-on-omnichain/building-on-omnichain"},
-			"referral": map[string]any{
-				"url":      "https://trade.mode.network?ref=MODETRADE",
-				"discount": 0.2,
-			},
 		},
 		"api": map[string]any{
 			"v1": map[string]any{
@@ -607,7 +603,6 @@ func (this *Modetrade) Describe() any {
 		},
 		"options": map[string]any{
 			"sandboxMode":              false,
-			"brokerId":                 "CCXTMODE",
 			"verifyingContractAddress": "0x6F7a338F2aA472838dEFD3283eB360d4Dff5D203",
 		},
 		"features": map[string]any{
@@ -4540,8 +4535,8 @@ func (this *Modetrade) Sign(path string, optionalArgs ...any) any {
 		var isOrder bool = (path == "algo/order") || (path == "order") || (path == "batch-order")
 		if isPostOrPut && isOrder {
 			var isSandboxMode *bool = this.SafeBool(this.Options, "sandboxMode", false)
-			if !(isSandboxMode != nil && *isSandboxMode) {
-				var brokerId *string = this.SafeString(this.Options, "brokerId", "CCXTMODE")
+			var brokerId *string = this.SafeString(this.Options, "brokerId")
+			if !(isSandboxMode != nil && *isSandboxMode) && brokerId != nil {
 				if path == "batch-order" {
 					var ordersList []any = SafeListTyped(paramsSorted, "orders")
 					for i := 0; i < len(ordersList); i++ {

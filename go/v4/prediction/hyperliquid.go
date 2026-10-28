@@ -79,10 +79,9 @@ func (this *Hyperliquid) Describe() any {
 				"public":  "https://api.hyperliquid-testnet.xyz",
 				"private": "https://api.hyperliquid-testnet.xyz",
 			},
-			"www":      "https://hyperliquid.xyz",
-			"doc":      "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api",
-			"fees":     "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees",
-			"referral": "https://app.hyperliquid.xyz/",
+			"www":  "https://hyperliquid.xyz",
+			"doc":  "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api",
+			"fees": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

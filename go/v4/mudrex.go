@@ -210,7 +210,6 @@ func (this *Mudrex) Describe() any {
 		},
 		"options": map[string]any{
 			"defaultType": "swap",
-			"broker":      "42ce8902-8585-448c-a1e8-0371a6ca7ca8",
 		},
 		"exceptions": map[string]any{
 			"exact": map[string]any{

@@ -148,10 +148,6 @@ func (this *Woo) Describe() any {
 			"www":  "https://woox.io/",
 			"doc":  []any{"https://developer.woox.io/", "https://docs.woox.io/"},
 			"fees": []any{"https://support.woox.io/hc/en-001/articles/4404611795353--Trading-Fees"},
-			"referral": map[string]any{
-				"url":      "https://woox.io/register?ref=DIJT0CNL",
-				"discount": 0.35,
-			},
 		},
 		"api": map[string]any{
 			"v1": map[string]any{
@@ -638,7 +634,6 @@ func (this *Woo) Describe() any {
 			"transfer": map[string]any{
 				"fillResponseFromRequest": true,
 			},
-			"brokerId": "bc830de7-50f3-460b-9ee0-f430f83f9dad",
 		},
 		"features": map[string]any{
 			"default": map[string]any{
@@ -4608,9 +4603,8 @@ func (this *Woo) Sign(path string, optionalArgs ...any) any {
 		this.CheckRequiredCredentials()
 		if (method == "POST") && ((path == "trade/algoOrder") || (path == "trade/order")) {
 			var isSandboxMode *bool = this.SafeBool(this.Options, "sandboxMode", false)
-			if !(isSandboxMode != nil && *isSandboxMode) {
-				var applicationId string = "bc830de7-50f3-460b-9ee0-f430f83f9dad"
-				var brokerId *string = this.SafeString(this.Options, "brokerId", applicationId)
+			var brokerId *string = this.SafeString(this.Options, "brokerId")
+			if !(isSandboxMode != nil && *isSandboxMode) && brokerId != nil {
 				var isTrigger bool = (strings.Index(path, "algo") > -1)
 				if isTrigger {
 					paramsSorted["brokerId"] = brokerId

@@ -158,10 +158,9 @@ func (this *Bitvavo) Describe() any {
 				"public":  "https://api.bitvavo.com",
 				"private": "https://api.bitvavo.com",
 			},
-			"www":      "https://bitvavo.com/",
-			"doc":      "https://docs.bitvavo.com/",
-			"fees":     "https://bitvavo.com/en/fees",
-			"referral": "https://bitvavo.com/?a=24F34952F7",
+			"www":  "https://bitvavo.com/",
+			"doc":  "https://docs.bitvavo.com/",
+			"fees": "https://bitvavo.com/en/fees",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

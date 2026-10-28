@@ -115,9 +115,8 @@ func (this *Hollaex) Describe() any {
 			"api": map[string]any{
 				"rest": "https://api.hollaex.com",
 			},
-			"www":      "https://hollaex.com",
-			"doc":      "https://apidocs.hollaex.com",
-			"referral": "https://pro.hollaex.com/signup?affiliation_code=QSWA6G",
+			"www": "https://hollaex.com",
+			"doc": "https://apidocs.hollaex.com",
 		},
 		"precisionMode": TICK_SIZE,
 		"requiredCredentials": map[string]any{

@@ -177,10 +177,9 @@ func (this *Bitget) Describe() any {
 				"earn":    "https://api.{hostname}",
 				"uta":     "https://api.{hostname}",
 			},
-			"www":      "https://www.bitget.com",
-			"doc":      []any{"https://www.bitget.com/docs/uta/Introduction", "https://www.bitget.com/docs/classic/Introduction"},
-			"fees":     "https://www.bitget.cc/zh-CN/rate?tab=1",
-			"referral": "https://www.bitget.com/expressly?languageType=0&channelCode=ccxt&vipCode=tg9j",
+			"www":  "https://www.bitget.com",
+			"doc":  []any{"https://www.bitget.com/docs/uta/Introduction", "https://www.bitget.com/docs/classic/Introduction"},
+			"fees": "https://www.bitget.cc/zh-CN/rate?tab=1",
 		},
 		"api": map[string]any{
 			"public": map[string]any{
@@ -3228,7 +3227,6 @@ func (this *Bitget) Describe() any {
 				"createMarketBuyOrderRequiresPrice": true,
 				"timeInForce":                       "GTC",
 			},
-			"broker": "p4sve",
 			"withdraw": map[string]any{
 				"fillResponseFromRequest": true,
 			},
@@ -16712,11 +16710,13 @@ func (this *Bitget) Sign(path string, optionalArgs ...any) any {
 		var signature string = this.Hmac(this.Encode(auth), this.Encode(this.Secret), sha256, "base64")
 		var broker *string = this.SafeString(this.Options, "broker")
 		requestHeaders = map[string]any{
-			"ACCESS-KEY":         this.ApiKey,
-			"ACCESS-SIGN":        signature,
-			"ACCESS-TIMESTAMP":   timestamp,
-			"ACCESS-PASSPHRASE":  this.Password,
-			"X-CHANNEL-API-CODE": broker,
+			"ACCESS-KEY":        this.ApiKey,
+			"ACCESS-SIGN":       signature,
+			"ACCESS-TIMESTAMP":  timestamp,
+			"ACCESS-PASSPHRASE": this.Password,
+		}
+		if broker != nil {
+			AddElementToObject(requestHeaders, "X-CHANNEL-API-CODE", broker)
 		}
 		if method == "POST" {
 			AddElementToObject(requestHeaders, "Content-Type", "application/json")

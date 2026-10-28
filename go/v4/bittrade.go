@@ -94,10 +94,9 @@ func (this *Bittrade) Describe() any {
 				"v2Public":  "https://{hostname}",
 				"v2Private": "https://{hostname}",
 			},
-			"www":      "https://www.bittrade.co.jp",
-			"referral": "https://www.bittrade.co.jp/register/?invite_code=znnq3",
-			"doc":      "https://api-doc.bittrade.co.jp",
-			"fees":     "https://www.bittrade.co.jp/ja-jp/support/fee",
+			"www":  "https://www.bittrade.co.jp",
+			"doc":  "https://api-doc.bittrade.co.jp",
+			"fees": "https://www.bittrade.co.jp/ja-jp/support/fee",
 		},
 		"api": map[string]any{
 			"v2Public": map[string]any{
@@ -619,9 +618,6 @@ func (this *Bittrade) Describe() any {
 			"currencyToPrecisionRoundingMode": TRUNCATE,
 			"fetchCurrencies": map[string]any{
 				"language": "en-US",
-			},
-			"broker": map[string]any{
-				"id": "AA03022abc",
 			},
 		},
 		"commonCurrencies": map[string]any{

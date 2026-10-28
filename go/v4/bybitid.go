@@ -24,11 +24,10 @@ func (this *Bybitid) Describe() any {
 		"hostname":  "bybit.id",
 		"certified": false,
 		"urls": map[string]any{
-			"logo":     "https://github.com/user-attachments/assets/97a5d0b3-de10-423d-90e1-6620960025ed",
-			"www":      "https://www.bybit.id",
-			"doc":      []any{"https://bybit-exchange.github.io/docs/v5/intro", "https://github.com/bybit-exchange"},
-			"fees":     "https://help.bybit.com/hc/en-us/articles/360039261154",
-			"referral": nil,
+			"logo": "https://github.com/user-attachments/assets/97a5d0b3-de10-423d-90e1-6620960025ed",
+			"www":  "https://www.bybit.id",
+			"doc":  []any{"https://bybit-exchange.github.io/docs/v5/intro", "https://github.com/bybit-exchange"},
+			"fees": "https://help.bybit.com/hc/en-us/articles/360039261154",
 		},
 		"httpExceptions": map[string]any{
 			"403": PermissionDenied,

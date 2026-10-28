@@ -182,10 +182,9 @@ func (this *Bybit) Describe() any {
 				"public":  "https://api-demo.{hostname}",
 				"private": "https://api-demo.{hostname}",
 			},
-			"www":      "https://www.bybit.com",
-			"doc":      []any{"https://bybit-exchange.github.io/docs/inverse/", "https://bybit-exchange.github.io/docs/linear/", "https://github.com/bybit-exchange"},
-			"fees":     "https://help.bybit.com/hc/en-us/articles/360039261154",
-			"referral": "https://www.bybit.com/invite?ref=XDK12WP",
+			"www":  "https://www.bybit.com",
+			"doc":  []any{"https://bybit-exchange.github.io/docs/inverse/", "https://bybit-exchange.github.io/docs/linear/", "https://github.com/bybit-exchange"},
+			"fees": "https://help.bybit.com/hc/en-us/articles/360039261154",
 		},
 		"api": map[string]any{
 			"public": map[string]any{
@@ -2011,7 +2010,6 @@ func (this *Bybit) Describe() any {
 			"recvWindow":                 5 * 1000,
 			"timeDifference":             0,
 			"adjustForTimeDifference":    false,
-			"brokerId":                   "CCXT",
 			"accountsByType": map[string]any{
 				"spot":       "SPOT",
 				"margin":     "SPOT",
@@ -13677,8 +13675,8 @@ func (this *Bybit) Sign(path string, optionalArgs ...any) any {
 			}
 		}
 	}
-	if method == "POST" {
-		var brokerId *string = this.SafeString(this.Options, "brokerId", "CCXT")
+	var brokerId *string = this.SafeString(this.Options, "brokerId")
+	if method == "POST" && brokerId != nil {
 		var headersBase any = requestHeaders
 		requestHeaders = func() any {
 			if IsEqual(headersBase, nil) {

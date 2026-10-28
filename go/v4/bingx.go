@@ -155,9 +155,8 @@ func (this *Bingx) Describe() any {
 				"cswap":       "https://open-api-vst.{hostname}/openApi",
 				"api":         "https://open-api-vst.{hostname}/openApi",
 			},
-			"www":      "https://bingx.com/",
-			"doc":      "https://bingx-api.github.io/docs/",
-			"referral": "https://bingx.com/invite/OHETOM",
+			"www": "https://bingx.com/",
+			"doc": "https://bingx-api.github.io/docs/",
 		},
 		"fees": map[string]any{
 			"tierBased": true,
@@ -1078,7 +1077,6 @@ func (this *Bingx) Describe() any {
 				"coinMPerp":  "inverse",
 			},
 			"recvWindow": 5 * 1000,
-			"broker":     "CCXT",
 			"defaultNetworks": map[string]any{
 				"ETH":  "ERC20",
 				"USDT": "ERC20",
@@ -8659,8 +8657,10 @@ func (this *Bingx) Sign(path string, optionalArgs ...any) any {
 		}()
 		var signature string = this.Hmac(this.Encode(encodeRequestSafe), this.Encode(this.Secret), sha256)
 		requestHeaders = map[string]any{
-			"X-BX-APIKEY":  this.ApiKey,
-			"X-SOURCE-KEY": this.SafeString(this.Options, "broker", "CCXT"),
+			"X-BX-APIKEY": this.ApiKey,
+		}
+		if broker := this.SafeString(this.Options, "broker"); broker != nil {
+			AddElementToObject(requestHeaders, "X-SOURCE-KEY", broker)
 		}
 		if isJsonContentType {
 			AddElementToObject(requestHeaders, "Content-Type", "application/json")

@@ -198,10 +198,9 @@ func (this *Btse) Describe() any {
 				"public":  "https://testapi.btse.io",
 				"private": "https://testapi.btse.io",
 			},
-			"www":      "https://www.btse.com",
-			"doc":      "https://support.btse.com/en/support/solutions/articles/43000044751-btse-api",
-			"referral": "https://www.btse.com/referral/o2tjIXx5",
-			"fees":     "https://support.btse.com/en/support/solutions/articles/43000064283",
+			"www":  "https://www.btse.com",
+			"doc":  "https://support.btse.com/en/support/solutions/articles/43000044751-btse-api",
+			"fees": "https://support.btse.com/en/support/solutions/articles/43000064283",
 		},
 		"api": map[string]any{
 			"public": map[string]any{
@@ -5013,7 +5012,6 @@ func (this *Btse) Sign(path string, optionalArgs ...any) any {
 			"request-nonce": ToString(nonce),
 			"request-sign":  signature,
 			"Content-Type":  "application/json",
-			"BROKER-ID":     "ccxt",
 		}
 	}
 	var bodyResolved *string = requestBody

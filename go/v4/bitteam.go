@@ -168,9 +168,8 @@ func (this *Bitteam) Describe() any {
 				"public":  "https://bit.team",
 				"private": "https://bit.team",
 			},
-			"www":      "https://bit.team/",
-			"referral": "https://bit.team/auth/sign-up?ref=bitboy2023",
-			"doc":      []any{"https://bit.team/trade/api/documentation"},
+			"www": "https://bit.team/",
+			"doc": []any{"https://bit.team/trade/api/documentation"},
 		},
 		"api": map[string]any{
 			"history": map[string]any{

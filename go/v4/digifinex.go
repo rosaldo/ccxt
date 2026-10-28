@@ -117,10 +117,9 @@ func (this *Digifinex) Describe() any {
 			"api": map[string]any{
 				"rest": "https://openapi.digifinex.com",
 			},
-			"www":      "https://www.digifinex.com",
-			"doc":      []any{"https://docs.digifinex.com"},
-			"fees":     "https://digifinex.zendesk.com/hc/en-us/articles/360000328422-Fee-Structure-on-DigiFinex",
-			"referral": "https://www.digifinex.com/en-ww/from/DhOzBg?channelCode=ljaUPp",
+			"www":  "https://www.digifinex.com",
+			"doc":  []any{"https://docs.digifinex.com"},
+			"fees": "https://digifinex.zendesk.com/hc/en-us/articles/360000328422-Fee-Structure-on-DigiFinex",
 		},
 		"api": map[string]any{
 			"public": map[string]any{

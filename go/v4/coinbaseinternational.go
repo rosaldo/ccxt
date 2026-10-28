@@ -119,10 +119,9 @@ func (this *Coinbaseinternational) Describe() any {
 			"api": map[string]any{
 				"rest": "https://drb.coinbase.com/api/v2",
 			},
-			"www":      "https://international.coinbase.com",
-			"doc":      []any{"https://docs.cdp.coinbase.com/coinbase-app/advanced-trade-apis/guides/derivatives/overview", "https://docs.cdp.coinbase.com/coinbase-app/advanced-trade-apis/guides/derivatives/technical#authentication", "https://docs.cdp.coinbase.com/coinbase-app/authentication-authorization/api-key-authentication", "https://docs.cdp.coinbase.com/coinbase-app/authentication-authorization/api-key-authentication#generating-a-jwt", "https://docs.cdp.coinbase.com/coinbase-app/oauth2-integration/access-and-refresh-tokens", "https://docs.deribit.com"},
-			"fees":     []any{"https://help.coinbase.com/en/international-exchange/trading-deposits-withdrawals/international-exchange-fees"},
-			"referral": "",
+			"www":  "https://international.coinbase.com",
+			"doc":  []any{"https://docs.cdp.coinbase.com/coinbase-app/advanced-trade-apis/guides/derivatives/overview", "https://docs.cdp.coinbase.com/coinbase-app/advanced-trade-apis/guides/derivatives/technical#authentication", "https://docs.cdp.coinbase.com/coinbase-app/authentication-authorization/api-key-authentication", "https://docs.cdp.coinbase.com/coinbase-app/authentication-authorization/api-key-authentication#generating-a-jwt", "https://docs.cdp.coinbase.com/coinbase-app/oauth2-integration/access-and-refresh-tokens", "https://docs.deribit.com"},
+			"fees": []any{"https://help.coinbase.com/en/international-exchange/trading-deposits-withdrawals/international-exchange-fees"},
 		},
 		"requiredCredentials": map[string]any{
 			"apiKey": true,
@@ -551,7 +550,6 @@ func (this *Coinbaseinternational) Describe() any {
 		},
 		"options": map[string]any{
 			"route":                   "auto",
-			"brokerId":                "nfqkvdjp",
 			"portfolio":               "",
 			"accessTokenRefreshRatio": 0.8,
 			"networksById": map[string]any{
