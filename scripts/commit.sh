@@ -33,7 +33,7 @@ usage() {
 }
 
 # The gate runs BEFORE the bump: a broken commit never becomes a version, and a
-# version never becomes a tag. Only offline tests live in go/v4 (no exchange calls).
+# version never becomes a tag. Every test here runs offline (no exchange calls).
 gate() {
   if [[ "${CCXT_SKIP_GATE:-}" == 1 ]]; then
     echo "warning: gate skipped (CCXT_SKIP_GATE=1)" >&2
@@ -48,6 +48,12 @@ gate() {
   echo "-> gate: go build + go vet + go test (go/v4)"
   (cd "$REPO_DIR/go/v4" && go build ./... && go vet ./... && go test -count=1 ./...) \
     || fail "go/v4: go build, go vet or go test failed"
+
+  # upstream's offline base suite (REST + WS helpers); the exchange, request and
+  # brokerId suites need upstream ts/ fixtures or the network and stay out
+  echo "-> gate: base tests (go/tests --baseTests, REST + WS)"
+  (cd "$REPO_DIR/go/tests" && go run . --baseTests > /dev/null && go run . --baseTests --ws > /dev/null) \
+    || fail "go/tests: base tests failed"
 
   echo "gate ok"
 }
