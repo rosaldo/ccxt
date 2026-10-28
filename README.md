@@ -6,23 +6,23 @@ A Go-only fork of [CCXT](https://github.com/ccxt/ccxt), cut from upstream tag
 ## Why
 
 - **Go only.** Upstream ships one repository for many languages (about 8.5 GB of
-  history). This fork keeps just the Go module, so it is small and fast to clone.
-- **No CCXT fees or attribution.** Upstream turns on a "builder fee" by default in
-  several DEX integrations (hyperliquid, aster, extended, grvt, lighter, nado,
-  pacifica, plus the hyperliquid and polymarket prediction markets): it approves a
-  CCXT-owned builder, attaches it to every order and sets a CCXT referral code.
-  This fork removes all of that; `go/v4/fork_no_builder_test.go` keeps it out.
+  history). This fork keeps just the Go module, now at the repository root.
+- **No CCXT fees, attribution or partner ids.** Upstream turns on a "builder fee" in
+  several DEX integrations, sends CCXT broker/partner ids (params, headers, client
+  order id prefixes such as Binance's `x-…`) and ships CCXT affiliate links. This fork
+  removes all of it; `fork_no_builder_test.go` and `fork_no_partner_test.go` keep it
+  out. A broker id is only sent if you set one yourself in `options`.
 - **No binaries and no AI-agent files** in the tree.
 
 ## Install
 
 ```bash
-go get github.com/rosaldo/ccxt/go/v4@v4.5.94
+go get github.com/rosaldo/ccxt/v5@v5.0.0
 ```
 
-The module lives in `go/v4`, so version `v4.X.Y` is the git tag `go/v4.X.Y`
-([go.dev/ref/mod](https://go.dev/ref/mod#vcs-version)). `@latest` picks the newest
-tag; `VERSION` holds the current one and `CHANGELOG.md` lists every release.
+v5 is the first major of the fork (module path `github.com/rosaldo/ccxt/v5`, tags
+`v5.X.Y`); it replaces the upstream-style `go/v4` layout. `VERSION` holds the current
+version and `CHANGELOG.md` lists every release.
 
 ```go
 package main
@@ -30,7 +30,7 @@ package main
 import (
 	"fmt"
 
-	ccxt "github.com/rosaldo/ccxt/go/v4"
+	ccxt "github.com/rosaldo/ccxt/v5"
 )
 
 func main() {
@@ -43,8 +43,9 @@ func main() {
 }
 ```
 
-Sub-packages: `github.com/rosaldo/ccxt/go/v4/pro` (WebSocket) and
-`github.com/rosaldo/ccxt/go/v4/prediction` (prediction markets).
+Sub-packages: `github.com/rosaldo/ccxt/v5/pro` (WebSocket) and
+`github.com/rosaldo/ccxt/v5/prediction` (prediction markets). `cli/` and `tests/` are
+separate local modules (a CLI and upstream's offline test runner).
 
 ## Develop
 

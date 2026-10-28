@@ -12,9 +12,9 @@
 #   feat | refactor              minor
 #   major                        major
 #
-# Tag: go/vX.Y.Z — the module github.com/rosaldo/ccxt/go/v4 lives in go/v4, so its
-# module subdirectory (path without the major suffix) is "go" and every version tag
-# must carry the "go/" prefix (go.dev/ref/mod, "Mapping versions to commits").
+# Tag: vX.Y.Z — the module github.com/rosaldo/ccxt/v5 lives at the repository root,
+# so each tag name equals the version (go.dev/ref/mod, "Mapping versions to commits");
+# the major is v5, so VERSION must stay at 5.x.y unless the module path changes too.
 #
 # Exit codes: 0 committed and tagged · 1 gate or git failure · 2 usage
 # Emergency only: CCXT_SKIP_GATE=1 scripts/commit.sh ...
@@ -22,7 +22,7 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
 VERSION_FILE="$REPO_DIR/VERSION"
-TAG_PREFIX="go/v"
+TAG_PREFIX="v"
 # shellcheck source=lib-version.sh
 . "$REPO_DIR/scripts/lib-version.sh"
 
@@ -45,15 +45,18 @@ gate() {
   local sh
   for sh in "$REPO_DIR"/scripts/*.sh; do bash -n "$sh" || fail "syntax error in $sh"; done
 
-  echo "-> gate: go build + go vet + go test (go/v4)"
-  (cd "$REPO_DIR/go/v4" && go build ./... && go vet ./... && go test -count=1 ./...) \
-    || fail "go/v4: go build, go vet or go test failed"
+  echo "-> gate: go build + go vet + go test (module root)"
+  (cd "$REPO_DIR" && go build ./... && go vet ./... && go test -count=1 ./...) \
+    || fail "go build, go vet or go test failed"
 
   # upstream's offline base suite (REST + WS helpers); the exchange, request and
   # brokerId suites need upstream ts/ fixtures or the network and stay out
-  echo "-> gate: base tests (go/tests --baseTests, REST + WS)"
-  (cd "$REPO_DIR/go/tests" && go run . --baseTests > /dev/null && go run . --baseTests --ws > /dev/null) \
-    || fail "go/tests: base tests failed"
+  echo "-> gate: base tests (tests --baseTests, REST + WS)"
+  (cd "$REPO_DIR/tests" && go run . --baseTests > /dev/null && go run . --baseTests --ws > /dev/null) \
+    || fail "tests: base tests failed"
+
+  echo "-> gate: go build (cli)"
+  (cd "$REPO_DIR/cli" && go build -o /dev/null .) || fail "cli: go build failed"
 
   echo "gate ok"
 }

@@ -4,7 +4,7 @@
 #
 # An entry is a commit whose subject carries a version, "type(vX.Y.Z): message" —
 # every commit made by commit.sh (and the initial commit). Newest first.
-# commit.sh runs this BEFORE it creates the go/vX.Y.Z tag, so the entry comes from
+# commit.sh runs this BEFORE it creates the vX.Y.Z tag, so the entry comes from
 # the subject, not from the tag.
 set -euo pipefail
 
