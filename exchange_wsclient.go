@@ -128,7 +128,7 @@ func (this *WSClient) CreateConnection() error {
 
 	// Start event handling goroutines
 	go this.handleOpen()
-	go this.handleMessages()
+	go this.handleMessages(conn)
 
 	return nil
 }
@@ -138,21 +138,16 @@ func (this *WSClient) handleOpen() {
 	this.OnOpen()
 }
 
-// Handle incoming WebSocket messages
-func (this *WSClient) handleMessages() {
+// Handle incoming WebSocket messages. The loop owns conn: this.Connection is
+// cleared by Close from other goroutines, so it is not re-read here.
+func (this *WSClient) handleMessages(conn *websocket.Conn) {
 	defer func() {
 		this.OnClose(nil)
-		if this.Connection != nil {
-			this.Connection.Close()
-		}
+		conn.Close()
 	}()
 
 	for {
-		if this.Connection == nil {
-			return
-		}
-
-		messageType, data, err := this.Connection.ReadMessage()
+		messageType, data, err := conn.ReadMessage()
 		if err != nil {
 			this.OnError(NetworkError(err))
 			return
@@ -243,8 +238,16 @@ func (this *WSClient) ClearPingInterval() {
 
 func (this *WSClient) OnPingInterval() {
 	this.PingMu.Lock()
+	defer this.PingMu.Unlock()
+	// a tick that fires while Close runs must not report a dead connection
+	this.ConnectionMu.Lock()
+	conn, isConnected := this.Connection, derefScalar(this.IsConnected).(bool)
+	this.ConnectionMu.Unlock()
+	if conn == nil {
+		return
+	}
 	if derefScalar(this.KeepAlive).(int64) > 0 {
-		if derefScalar(this.IsConnected).(bool) == true {
+		if isConnected {
 			now := time.Now().UnixNano() / int64(time.Millisecond)
 			lastPong := this.GetLastPong()
 			if lastPong == nil {
@@ -280,25 +283,22 @@ func (this *WSClient) OnPingInterval() {
 				} else {
 					// WriteControl is safe to call concurrently with WriteMessage,
 					// so the keepalive ping needs no ConnectionMu
-					if this.Connection != nil {
-						if this.Verbose {
-							this.Log(time.Now(), "sending connection ping")
-						}
-						err := this.Connection.WriteControl(websocket.PingMessage, nil, time.Now().Add(5*time.Second))
-						if err != nil {
-							// a swallowed ping failure only surfaced two keepAlive
-							// periods later as a misattributed pong-miss timeout,
-							// route the transport death promptly instead, see
-							// https://github.com/ccxt/ccxt/issues/22075 for the
-							// python cousin of this pattern
-							this.OnError(NetworkError(err))
-						}
+					if this.Verbose {
+						this.Log(time.Now(), "sending connection ping")
+					}
+					err := conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(5*time.Second))
+					if err != nil {
+						// a swallowed ping failure only surfaced two keepAlive
+						// periods later as a misattributed pong-miss timeout,
+						// route the transport death promptly instead, see
+						// https://github.com/ccxt/ccxt/issues/22075 for the
+						// python cousin of this pattern
+						this.OnError(NetworkError(err))
 					}
 				}
 			}
 		}
 	}
-	this.PingMu.Unlock()
 }
 
 func (this *WSClient) OnOpen() {
@@ -316,14 +316,10 @@ func (this *WSClient) OnOpen() {
 	}
 }
 
+// Close closes the socket under ConnectionMu and resolves Disconnected, which
+// stops the keep-alive pinger instead of leaving it ticking on a dead connection.
 func (this *WSClient) Close() *Future {
-	if this.Connection != nil {
-		if this.Disconnected == nil {
-			this.Disconnected = NewFuture()
-		}
-		this.Connection.Close()
-		this.Connection = nil
-	}
+	_ = this.Client.Close()
 	return this.Disconnected.(*Future)
 }
 

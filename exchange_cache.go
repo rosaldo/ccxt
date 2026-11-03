@@ -442,14 +442,13 @@ func (c *ArrayCacheByTimestamp) Append(item any) {
 	c.Mu.Lock()
 	defer c.Mu.Unlock()
 
-	var existing any
 	exists := false
 	if hasTs {
-		existing, exists = c.Hashmap[ts]
+		_, exists = c.Hashmap[ts]
 	}
 
 	if exists {
-		c.mergeRow(ts, existing, item)
+		c.mergeRow(ts, item)
 	} else {
 		if hasTs {
 			c.Hashmap[ts] = item
@@ -477,27 +476,17 @@ func (c *ArrayCacheByTimestamp) Append(item any) {
 	c.newUpdates = c.sizeTracker.Size()
 }
 
-// mergeRow updates the stored row for `ts` in place so it ends up EQUAL to the
-// incoming row, length included, while keeping its position in c.Data.
+// mergeRow replaces the stored row for `ts` with a copy of the incoming row,
+// length included, while keeping its position in c.Data.
 //
-// The previous implementation iterated the OLD row's indices and read the NEW
-// one, so appending [100,9,9] onto [100,1,2,3,4,5] indexed arr[3] and panicked
-// with index out of range; when the lengths happened to line up it still left a
-// stale tail behind ([100,9,9,3,4,5]). Callers must hold c.Mu.
-func (c *ArrayCacheByTimestamp) mergeRow(ts int64, existing any, item any) {
-	oldArr, okOld := existing.([]any)
-	newArr, okNew := item.([]any)
-	if okOld && okNew && len(oldArr) == len(newArr) {
-		// same shape: c.Data and c.Hashmap share this backing array, so writing
-		// through it is enough and no slice header has to be republished
-		copy(oldArr, newArr)
-		return
-	}
-
+// The row is replaced, never written in place: ToArray hands out the row
+// references themselves and callers read them without c.Mu (OHLCVsFromList), so
+// an in-place copy tore a candle under a concurrent reader (close of one update,
+// volume of another). Same copy-on-write as ArrayCacheBySymbolById. Callers must
+// hold c.Mu.
+func (c *ArrayCacheByTimestamp) mergeRow(ts int64, item any) {
 	merged := item
-	if okNew {
-		// a shorter update must drop the tail, a longer one must grow: either way
-		// the slice header changes, so it has to be published to both views
+	if newArr, okNew := item.([]any); okNew {
 		row := make([]any, len(newArr))
 		copy(row, newArr)
 		merged = row
@@ -537,6 +526,9 @@ func (c *ArrayCacheByTimestamp) ToArray() []any {
 // GetLimit for timestamp cache ignores symbol because entries are not
 // symbol-segmented.  It mirrors the same precedence order as ArrayCache.
 func (c *ArrayCacheByTimestamp) GetLimit(symbol any, limit any) *int64 {
+	// Append updates the same counters from the read loop
+	c.Mu.Lock()
+	defer c.Mu.Unlock()
 	c.clearUpdates = true
 	if derefScalar(limit) == nil {
 		return Int64PtrTyped(c.newUpdates)

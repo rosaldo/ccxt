@@ -61,7 +61,8 @@ type Client struct {
 	ConnectMu      sync.RWMutex // protects Connect calls
 	ReadLoopClosed chan struct{}
 
-	Error error // last error, nil if connection considered healthy
+	Error   error      // last error, nil if connection considered healthy; access via GetError/SetError
+	ErrorMu sync.Mutex // the read loop and the keep-alive pinger both report errors
 
 	Connected             any            // *Future             		// signal channel for connection established
 	Disconnected          any            // *Future              	// future for disconnection
@@ -359,10 +360,11 @@ func (this *Client) OnError(err any) {
 	if errStr, ok := err.(string); ok {
 		err = NetworkError(errStr)
 	}
-	this.Error = err.(error)
-	this.Reset(this.Error)
+	e := err.(error)
+	this.SetError(e)
+	this.Reset(e)
 	if this.OnErrorCallback != nil {
-		this.OnErrorCallback(this, this.Error)
+		this.OnErrorCallback(this, e)
 	}
 }
 
@@ -370,7 +372,7 @@ func (this *Client) OnClose(event any) {
 	if this.Verbose {
 		this.Log(time.Now(), "onClose", event)
 	}
-	if this.Error == nil {
+	if this.GetError() == nil {
 		// todo: exception types for server-side disconnects
 		// this.Reset(NetworkError("connection closed by remote server, closing code " + event.code)) // TODO: what type is event?
 		eventStr := fmt.Sprintf("%v", event)
@@ -551,10 +553,14 @@ func (this *Client) IsJsonEncodedObject(str string) bool {
 }
 
 func (this *Client) GetError() error {
+	this.ErrorMu.Lock()
+	defer this.ErrorMu.Unlock()
 	return this.Error
 }
 
 func (this *Client) SetError(err error) {
+	this.ErrorMu.Lock()
+	defer this.ErrorMu.Unlock()
 	this.Error = err
 }
 
